@@ -140,7 +140,6 @@
 	function startConfig(db){
 		// Check config 	
 		if(!conf){
-			alert('Init');
 			// Create table if EXISTS
 			createTableConfig(db);
 			
@@ -153,18 +152,14 @@
 			// Set configured
 			SetConfigured(db);
 			
-		}else{
-			alert('Already call config !');	
 		}
 	}
 		
 		function IsConfigReturn(tx, results){
 			if(results.rows.length > 0) {
-				alert('1');
 				 conf = true;
 				 startConfig(db);
-			}else{			
-				alert('2');				
+			}else{					
 				 conf = false;
 				 startConfig(db);
 			}
@@ -214,6 +209,20 @@
 				onError,
 				onReadyTransaction
 			);	
+			
+			db.transaction(
+					function(tx){				
+						tx.executeSql(
+						"INSERT INTO AccountInfo(AccountID) VALUES(?)",
+						['MaiTV'],
+						onSuccessExecuteSql,
+						onError
+					)
+				},
+				onError,
+				onReadyTransaction
+			);
+		//	CREATE TABLE IF NOT EXISTS AccountInfo (AccountID TEXT PRIMARY KEY , AccountDisplay TEXT, AccountBalance INTEGER, CurrencyUnit TEXT)
 
 	});
 </script>
