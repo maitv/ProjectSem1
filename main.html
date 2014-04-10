@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
+<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.2/jquery.mobile-1.4.2.min.css">
+<script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+<script src="http://code.jquery.com/mobile/1.4.2/jquery.mobile-1.4.2.min.js"></script>
+<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+</head>
+<body>
+<div id="dvContent">
+	
+</div>
+</body>
+</html>
+
+
+<script language="javascript">
+
+	
+		/*function IsConfig(){
+			alert('start');
+			db.transaction(
+					function(tx){				
+						tx.executeSql(
+						"SELECT * FROM Config",
+						[],
+						IsConfigReturn,
+						onError
+					)
+				},
+				onError,
+				onReadyTransaction
+			)
+			alert('stop');			
+		}*/
+		
+		
+	
+	$(document).ready(function(){
+	  var conf = false;
+	  // Open db
+	  var db = window.openDatabase("myDatabase", "1.0", "My WebSQL database", 5*1024*1024);
+	  
+	  if(!db) {
+			// Check DB was created
+			alert('Your DB was not created this time');
+			return false;
+		}
+		
+		function onReadyTransaction( ){
+			console.log( 'Transaction completed' )
+		}
+		
+		function onSuccessExecuteSql( tx, results ){
+			console.log( 'Execute SQL completed' )
+		}
+		
+		function onError( err ){
+			console.log( err );
+			startConfig(db);
+		}
+		
+		function SetConfigured(db){
+			db.transaction(
+				function(tx){
+				tx.executeSql(
+					"INSERT INTO Config(IsConfig) VALUES(?)",
+					[1],
+					onSuccessExecuteSql,
+					onError
+				)
+				},
+				onError,
+				onReadyTransaction
+			);
+		}
+			
+		function createTableConfig(db){
+			db.transaction(
+				function(tx){
+				tx.executeSql(
+					"CREATE TABLE IF NOT EXISTS Config (IsConfig BOOL)",
+					[],
+					onSuccessExecuteSql,
+					onError
+				)
+				},
+				onError,
+				onReadyTransaction
+			);
+		}
+	
+	
+		function createTableAccountInfo(db){
+			db.transaction(
+				function(tx){
+					tx.executeSql(
+						"CREATE TABLE IF NOT EXISTS AccountInfo (AccountID TEXT PRIMARY KEY , AccountDisplay TEXT, AccountBalance INTEGER, CurrencyUnit TEXT)",
+						[],
+						onSuccessExecuteSql,
+						onError
+					)
+				},
+				onError,
+				onReadyTransaction
+			);
+		}
+		
+		function createTableCategory(db){
+			db.transaction(
+				function(tx){
+					tx.executeSql(
+						"CREATE TABLE IF NOT EXISTS Category (CategoryID INTEGER PRIMARY KEY AUTOINCREMENT, CategoryName TEXT, CategoryType INTEGER)",
+						[],
+						onSuccessExecuteSql,
+						onError
+					)
+				},
+				onError,
+				onReadyTransaction
+			);
+		}
+	
+		function createTableTransaction(db){
+			db.transaction(
+				function(tx){	
+					tx.executeSql(
+						"CREATE TABLE IF NOT EXISTS Transactions (TransactionID INTEGER PRIMARY KEY AUTOINCREMENT, Amount INTEGER, Description TEXT, CategoryID INTEGER, Note TEXT, TransactionDate DATE)",
+						[],
+						onSuccessExecuteSql,
+						onError
+					)
+				},
+				onError,
+				onReadyTransaction
+			);
+		}	
+		
+	function startConfig(db){
+		// Check config 	
+		if(!conf){
+			alert('Init');
+			// Create table if EXISTS
+			createTableConfig(db);
+			
+			createTableAccountInfo(db);
+			
+			createTableCategory(db);
+			
+			createTableTransaction(db);
+			
+			// Set configured
+			SetConfigured(db);
+			
+		}else{
+			alert('Already call config !');	
+		}
+	}
+		
+		function IsConfigReturn(tx, results){
+			if(results.rows.length > 0) {
+				alert('1');
+				 conf = true;
+				 startConfig(db);
+			}else{			
+				alert('2');				
+				 conf = false;
+				 startConfig(db);
+			}
+		}
+		
+		/*db.transaction(
+			function(tx){
+				tx.executeSql(
+					"DROP TABLE AccountInfo",
+					[],
+					onSuccessExecuteSql,
+					onError
+				),
+				tx.executeSql(
+					"DROP TABLE Category",
+					[],
+					onSuccessExecuteSql,
+					onError
+				),
+				tx.executeSql(
+					"DROP TABLE Config",
+					[],
+					onSuccessExecuteSql,
+					onError
+				),
+				tx.executeSql(
+					"DROP TABLE Transactions",
+					[],
+					onSuccessExecuteSql,
+					onError
+				)
+			},
+			onError,
+			onReadyTransaction
+		)*/
+		
+		// Get config
+		db.transaction(
+					function(tx){				
+						tx.executeSql(
+						"SELECT * FROM Config",
+						[],
+						IsConfigReturn,
+						onError
+					)
+				},
+				onError,
+				onReadyTransaction
+			);	
+
+	});
+</script>
