@@ -12,29 +12,91 @@
         <div data-role="header" data-id="persistheader" 
         data-position="fixed">
 	        <h1>Tạo tài khoản</h1>
-            <!--div data-role="navbar">
-                <ul>
-                <li><a href="#" data-role="button" 
-                class="ui-btn-active ui-state-persist">
-                Movies</a></li>
-                <li><a href="#songs" data-role="button">Songs</a></li>
-                <li><a href="#serials" data-role="button">Serials</a></li>
-                </ul>
-            </div-->
     	</div>
-        <div data-role="content">
-            <h3>Tạo tài khoản ở đây</h3>
+        <div data-role="content">            
+            <form action="#" method='post'>
+               <input type='text' id='txtAccountDisplay' name='txtAccountDisplay' placeholder='Nhập vào tên tài khoản' value='' />
+               <input type='number' id='txtAccountBalance' name='txtAccountBalance' placeholder='Nhập vào số tiền của tài khoản' />
         </div>
-        <div data-role="footer" data-id="persistfooter" 
-        data-position="fixed" >
-            <!--div data-role="navbar">
+        <div data-role="footer" data-id="persistfooter" data-position="fixed" >
+            <div data-role="navbar">
                 <ul>
-                    <li><a href="#" data-role="button">New</a></li>
-                    <li><a href="#" data-role="button">Popular</a></li>
-                    <li><a href="#" data-role="button">Classics</a></li>
+                	<li><input type="submit" value="Tạo tài khoản" onClick="onCreateAccount()"></li>
+                    <li><input type="reset" value="Hủy bỏ" onClick="onReset()"></li>
                 </ul>
             </div>
+            </form>
         </div>
 	</div>
 </body>
 </html>
+<script>	
+	// Open db
+	var db = window.openDatabase("myDatabase", "1.0", "My WebSQL database", 5*1024*1024);
+	
+	if(!db) {
+		// Check DB was created
+		alert('Your DB was not created this time');
+	}
+	
+	function onReadyTransaction( ){
+		console.log( 'Transaction completed' )
+	}
+	
+	function onSuccessExecuteSql( tx, results ){
+		console.log( 'Execute SQL completed' )
+	}
+	
+	function onError( err ){
+		console.log( err );
+		alert('error');
+	}
+	
+	function onReset(){
+		// reset all data in form
+		document.getElementById('txtAccountDisplay').value = "";
+		document.getElementById('txtAccountBalance').value = "";
+	}
+	
+	function validatation(){
+		if (document.getElementById('txtAccountDisplay').value == "" ||
+		document.getElementById('txtAccountBalance').value == "")
+		{
+			return false;
+		}
+		
+		return true;
+	}
+	
+	function onSuccessCreateAccount(){
+		// create account success => redirect to mainpage.html
+		window.location.href = 'mainpage.html';
+	}
+	
+	function onCreateAccount(){
+		var accountDisplay = "";
+		var accountBalance = 0;
+		
+		if(!validatation()){
+			alert('Bạn chưa nhập tên/số tiền !');
+			return false;
+		}
+		
+		accountDisplay = document.getElementById('txtAccountDisplay').value ;
+		accountDisplay = accountDisplay.trim();
+		accountBalance = parseInt(document.getElementById('txtAccountBalance').value);
+		
+		db.transaction(
+					function(tx){				
+						tx.executeSql(
+						"INSERT INTO AccountInfo(AccountDisplay, AccountBalance, CurrencyUnit) VALUES(?, ?, ?)",
+						[accountDisplay, accountBalance, 'Việt Nam Đồng'],
+						onSuccessCreateAccount,
+						onError
+					)
+				},
+				onError,
+				onReadyTransaction
+			);
+	}
+</script>
