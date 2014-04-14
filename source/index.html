@@ -164,7 +164,7 @@
 						"SELECT * FROM AccountInfo",
 						[],
 						dispatcher,
-						onCreateAccount
+						dispatcher
 					)
 				},
 				onError,
@@ -180,10 +180,6 @@
 				 conf = false;
 				 startConfig(db);
 			}
-		}
-		
-		function onCreateAccount(){
-			window.location.href = 'createaccount.html';
 		}
 		
 		function dispatcher(tx, results){
@@ -240,7 +236,6 @@
 				onError,
 				onReadyTransaction
 			);	
-			
 		/*db.transaction(
 					function(tx){				
 						tx.executeSql(
@@ -252,6 +247,7 @@
 				},
 				onError,
 				onReadyTransaction
+			);
 			);	
 			*/
 		//	CREATE TABLE IF NOT EXISTS AccountInfo (AccountID TEXT PRIMARY KEY , AccountDisplay TEXT, AccountBalance INTEGER, CurrencyUnit TEXT)
