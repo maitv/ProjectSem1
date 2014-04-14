@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
+<<<<<<< HEAD:source/main.html
+<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.2/jquery.mobile-1.4.2.min.css">
+<script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+<script src="http://code.jquery.com/mobile/1.4.2/jquery.mobile-1.4.2.min.js"></script>
+<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+<link rel="stylesheet" type="text/css" href="money_lover.css">
+</head>
+<body>
+<div class="login_form">
+	
+</div>
+=======
+<link rel="stylesheet" href="js/jquery.mobile-1.4.2/jquery.mobile-1.4.2.min.css">
+<script src="js/jquery-1.11.0.min.js"></script>
+<script src="js/jquery.mobile-1.4.2/jquery.mobile-1.4.2.min.js"></script>
+<script src="js/jquery-1.11.0.min.js"></script>
+</head>
+<body>
+>>>>>>> FETCH_HEAD:source/index.html
+</body>
+</html>
+
+<script language="javascript">
+
+	
+		/*function IsConfig(){
+			alert('start');
+			db.transaction(
+					function(tx){				
+						tx.executeSql(
+						"SELECT * FROM Config",
+						[],
+						IsConfigReturn,
+						onError
+					)
+				},
+				onError,
+				onReadyTransaction
+			)
+			alert('stop');			
+		}*/
+		
+		
+	
+	$(document).ready(function(){
+		var conf = false;
+		var accountExisted = false;
+		
+		// Open db
+		var db = window.openDatabase("myDatabase", "1.0", "My WebSQL database", 5*1024*1024);
+		
+		if(!db) {
+			// Check DB was created
+			alert('Your DB was not created this time');
+			return false;
+		}
+		
+		function onReadyTransaction( ){
+			console.log( 'Transaction completed' )
+		}
+		
+		function onSuccessExecuteSql( tx, results ){
+			console.log( 'Execute SQL completed' )
+		}
+		
+		function onError( err ){
+			console.log( err );
+			
+			if(!conf){
+				startConfig(db);
+			}
+		}
+		
+		function SetConfigured(db){
+			db.transaction(
+				function(tx){
+				tx.executeSql(
+					"INSERT INTO Config(IsConfig) VALUES(?)",
+					[1],
+					onSuccessExecuteSql,
+					onError
+				)
+				},
+				onError,
+				onReadyTransaction
+			);
+		}
+			
+		function createTableConfig(db){
+			db.transaction(
+				function(tx){
+				tx.executeSql(
+					"CREATE TABLE IF NOT EXISTS Config (IsConfig BOOL)",
+					[],
+					onSuccessExecuteSql,
+					onError
+				)
+				},
+				onError,
+				onReadyTransaction
+			);
+		}
+		
+		
+		function createTableAccountInfo(db){
+			db.transaction(
+				function(tx){
+					tx.executeSql(
+						"CREATE TABLE IF NOT EXISTS AccountInfo (AccountID INTEGER PRIMARY KEY AUTOINCREMENT, AccountDisplay TEXT, AccountBalance INTEGER, CurrencyUnit TEXT)",
+						[],
+						onSuccessExecuteSql,
+						onError
+					)
+				},
+				onError,
+				onReadyTransaction
+			);
+		}
+		
+		function createTableCategory(db){
+			db.transaction(
+				function(tx){
+					tx.executeSql(
+						"CREATE TABLE IF NOT EXISTS Category (CategoryID INTEGER PRIMARY KEY AUTOINCREMENT, CategoryName TEXT, CategoryType INTEGER)",
+						[],
+						onSuccessExecuteSql,
+						onError
+					)
+				},
+				onError,
+				onReadyTransaction
+			);
+		}
+		
+		function createTableTransaction(db){
+			db.transaction(
+				function(tx){	
+					tx.executeSql(
+						"CREATE TABLE IF NOT EXISTS Transactions (TransactionID INTEGER PRIMARY KEY AUTOINCREMENT, Amount INTEGER, Description TEXT, CategoryID INTEGER, Note TEXT, TransactionDate DATE)",
+						[],
+						onSuccessExecuteSql,
+						onError
+					)
+				},
+				onError,
+				onReadyTransaction
+			);
+		}				
+		
+		function startConfig(db){
+			// Check config 	
+			if(!conf){
+				// Create table if EXISTS
+				createTableConfig(db);
+				
+				createTableAccountInfo(db);
+				
+				createTableCategory(db);
+				
+				createTableTransaction(db);
+			
+				// Set configured
+				SetConfigured(db);				
+			}
+			
+			db.transaction(
+					function(tx){				
+						tx.executeSql(
+						"SELECT * FROM AccountInfo",
+						[],
+						dispatcher,
+						dispatcher
+					)
+				},
+				onError,
+				onReadyTransaction
+			);				
+		}
+		
+		function IsConfigReturn(tx, results){
+			if(results.rows.length > 0) {
+				 conf = true;
+				 startConfig(db);
+			}else{					
+				 conf = false;
+				 startConfig(db);
+			}
+		}
+		
+		function dispatcher(tx, results){
+			if(results.rows.length > 0) {
+				 //accountExisted = true;
+				 window.location.href = 'mainpage.html';
+			}else{					
+				//accountExisted = false;
+				window.location.href = 'createaccount.html';
+			}
+		}
+		
+		/*db.transaction(
+			function(tx){
+				tx.executeSql(
+					"DROP TABLE AccountInfo",
+					[],
+					onSuccessExecuteSql,
+					onError
+				),
+				tx.executeSql(
+					"DROP TABLE Category",
+					[],
+					onSuccessExecuteSql,
+					onError
+				),
+				tx.executeSql(
+					"DROP TABLE Config",
+					[],
+					onSuccessExecuteSql,
+					onError
+				),
+				tx.executeSql(
+					"DROP TABLE Transactions",
+					[],
+					onSuccessExecuteSql,
+					onError
+				)
+			},
+			onError,
+			onReadyTransaction
+		)*/
+				
+		// Get config
+		db.transaction(
+					function(tx){				
+						tx.executeSql(
+						"SELECT * FROM Config",
+						[],
+						IsConfigReturn,
+						onError
+					)
+				},
+				onError,
+				onReadyTransaction
+			);	
+			
+		/*db.transaction(
+					function(tx){				
+						tx.executeSql(
+						"INSERT INTO AccountInfo(AccountDisplay, AccountBalance, CurrencyUnit) VALUES(?, ?, ?)",
+						['MaiTV', 10000000, 'Việt Nam Đồng'],
+						onSuccessExecuteSql,
+						onError
+					)
+				},
+				onError,
+				onReadyTransaction
+			);	
+			*/
+		//	CREATE TABLE IF NOT EXISTS AccountInfo (AccountID TEXT PRIMARY KEY , AccountDisplay TEXT, AccountBalance INTEGER, CurrencyUnit TEXT)
+
+	});
+</script>
