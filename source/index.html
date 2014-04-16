@@ -7,6 +7,7 @@
 <script src="js/jquery-1.11.0.min.js"></script>
 <script src="js/jquery.mobile-1.4.2/jquery.mobile-1.4.2.min.js"></script>
 <script src="js/jquery-1.11.0.min.js"></script>
+<script src="js/common.js"></script>
 </head>
 <body>
 <div class="login_form">
@@ -50,14 +51,14 @@
 			return false;
 		}
 		
-		function onReadyTransaction( ){
+		/*function onReadyTransaction( ){
 			console.log( 'Transaction completed' )
 		}
 		
 		function onSuccessExecuteSql( tx, results ){
 			console.log( 'Execute SQL completed' )
 		}
-		
+		*/
 		function onError( err ){
 			console.log( err );
 			
@@ -73,10 +74,10 @@
 					"INSERT INTO Config(IsConfig) VALUES(?)",
 					[1],
 					onSuccessExecuteSql,
-					onError
+					onErrorCommon
 				)
 				},
-				onError,
+				onErrorCommon,
 				onReadyTransaction
 			);
 		}
@@ -88,10 +89,10 @@
 					"CREATE TABLE IF NOT EXISTS Config (IsConfig BOOL)",
 					[],
 					onSuccessExecuteSql,
-					onError
+					onErrorCommon
 				)
 				},
-				onError,
+				onErrorCommon,
 				onReadyTransaction
 			);
 		}
@@ -104,10 +105,10 @@
 						"CREATE TABLE IF NOT EXISTS AccountInfo (AccountID INTEGER PRIMARY KEY AUTOINCREMENT, AccountDisplay TEXT, AccountBalance INTEGER, CurrencyUnit TEXT)",
 						[],
 						onSuccessExecuteSql,
-						onError
+						onErrorCommon
 					)
 				},
-				onError,
+				onErrorCommon,
 				onReadyTransaction
 			);
 		}
@@ -119,10 +120,10 @@
 						"CREATE TABLE IF NOT EXISTS Category (CategoryID INTEGER PRIMARY KEY AUTOINCREMENT, CategoryName TEXT, CategoryType INTEGER)",
 						[],
 						onSuccessExecuteSql,
-						onError
+						onErrorCommon
 					)
 				},
-				onError,
+				onErrorCommon,
 				onReadyTransaction
 			);
 		}
@@ -134,10 +135,10 @@
 						"CREATE TABLE IF NOT EXISTS Transactions (TransactionID INTEGER PRIMARY KEY AUTOINCREMENT, Amount INTEGER, Description TEXT, CategoryID INTEGER, Note TEXT, TransactionDate DATE)",
 						[],
 						onSuccessExecuteSql,
-						onError
+						onErrorCommon
 					)
 				},
-				onError,
+				onErrorCommon,
 				onReadyTransaction
 			);
 		}				
@@ -167,7 +168,7 @@
 						dispatcher
 					)
 				},
-				onError,
+				onErrorCommon,
 				onReadyTransaction
 			);				
 		}

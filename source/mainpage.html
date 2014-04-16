@@ -6,24 +6,23 @@
 <script src="js/jquery-1.11.0.min.js"></script>
 <script src="js/jquery.mobile-1.4.2/jquery.mobile-1.4.2.min.js"></script>
 <script src="js/jquery-1.11.0.min.js"></script>
+<script src="js/common.js"></script>
+<link rel="stylesheet" href="css/mainpage.css" >
 </head>
 <body>
-    <div id="movies" data-role="page" >
+    <div id="mainpage" data-role="page" >
         <div data-role="header" data-id="persistheader" 
-        data-position="fixed">
-	        <h1>Tài khoản của tôi</h1>
-            <!--div data-role="navbar">
-                <ul>
-                <li><a href="#" data-role="button" 
-                class="ui-btn-active ui-state-persist">
-                Movies</a></li>
-                <li><a href="#songs" data-role="button">Songs</a></li>
-                <li><a href="#serials" data-role="button">Serials</a></li>
-                </ul>
-            </div-->
+        data-position="fixed" id="mainpageHeader">
+	        <h1 id="accountDisplay">Tài khoản của tôi</h1>
     	</div>
-        <div data-role="content">
-            <h3>This is main page</h3>
+        <div data-role="content" id="mainContent">
+            <!--h3>This is main page</h3-->
+            <div id="mainView">
+            	<div id="addTransaction"></div>
+                <div id="listTransaction"></div>
+                <div id="listDebts"></div>
+                <div id="trends"></div>
+            </div>
         </div>
         <div data-role="footer" data-id="persistfooter" 
         data-position="fixed" >
@@ -33,8 +32,21 @@
                     <li><a href="#" data-role="button">Popular</a></li>
                     <li><a href="#" data-role="button">Classics</a></li>
                 </ul>
-            </div>
+            </div-->
         </div>
 	</div>
 </body>
 </html>
+<script>
+	$(document).ready(function(){
+		var db = window.openDatabase("myDatabase", "1.0", "My WebSQL database", 5*1024*1024);
+		
+		if(!db) {
+			// Check DB was created
+			alert('Your DB was not created this time');
+		}
+		
+		getAccountDisplay(db);
+		
+	});
+</script>

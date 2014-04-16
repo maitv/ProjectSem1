@@ -1,0 +1,41 @@
+@charset "utf-8";
+/* CSS Document */
+#mainpageHeader{
+	color:#FFF;
+	background-color:#093;
+	font-weight:bold;
+}
+
+#mainContent{
+	text-align:center;
+}
+
+#mainView{
+	width:100%;	
+	height:100%;
+}
+
+#addTransaction,  #listDebts,#listTransaction, #trends{
+	float:left;
+	margin-left:5%;
+	margin-right: 5%;
+	margin-bottom: 40px;
+	width:40%;
+	height: 150px;
+}
+
+#addTransaction{
+	background-color:#0C6;
+}
+
+#listDebts{
+	background-color:#F00;
+}
+
+#listTransaction{
+	background-color:#936;
+}
+
+#trends{
+	background-color:#FC6;
+}
