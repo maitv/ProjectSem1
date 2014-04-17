@@ -3,7 +3,7 @@
 .login_form {
 	width:640px;
 	height:1136px;
-	background-image: url(first_screen_form.png)
+	background-image:url(../images/first_screen_form.png)
 }
 
 .login_form .button_login {
