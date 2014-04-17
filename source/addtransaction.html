@@ -13,24 +13,10 @@
     <div id="mainpage" data-role="page" >
         <div data-role="header" data-id="persistheader" 
         data-position="fixed" id="mainpageHeader">
-	        <h1 id="accountDisplay">Tài khoản của tôi</h1>
+	        <h1>Thêm giao dịch</h1>
     	</div>
         <div data-role="content" id="mainContent">
-            <!--h3>This is main page</h3-->
-            <div id="mainView">
-            	<div id="addTransaction">
-                	<h1>Thêm giao dịch</h1>
-                </div>
-                <div id="listTransaction">
-                	<h1>Sổ chi tiêu</h1>
-                </div>
-                <div id="listDebts">
-                	<h1>Sổ nợ</h1>
-                </div>
-                <div id="trends">
-                	<h1>Thống kê</h1>
-                </div>
-            </div>
+          
         </div>
         <div data-role="footer" data-id="persistfooter" 
         data-position="fixed" >
@@ -53,8 +39,6 @@
 			// Check DB was created
 			alert('Your DB was not created this time');
 		}
-		
-		getAccountDisplay(db);
 		
 	});
 </script>
