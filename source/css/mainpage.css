@@ -2,7 +2,7 @@
 /* CSS Document */
 #mainpageHeader{
 	color:#FFF;
-	background-color:#093	;
+	background-color:#3C3	;
 	font-weight:bold;
 }
 
@@ -21,21 +21,21 @@
 	margin-right: 5%;
 	margin-bottom: 40px;
 	width:40%;
-	height: 150px;
+	height: 200px;
 }
 
 #addTransaction{
-	background-color:#0C6;
+	/*background-color:#0C6;*/
 }
 
 #listDebts{
-	background-color:#F00;
+	/*background-color:#F00;*/
 }
 
 #listTransaction{
-	background-color:#936;
+	/*background-color:#936;*/
 }
 
 #trends{
-	background-color:#FC6;
+	/*background-color:#FC6;*/
 }

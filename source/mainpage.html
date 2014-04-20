@@ -8,6 +8,10 @@
 <script src="js/jquery-1.11.0.min.js"></script>
 <script src="js/common.js"></script>
 <link rel="stylesheet" href="css/mainpage.css" >
+
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
+<script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+<script src="http://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
 </head>
 <body>
     <div id="mainpage" data-role="page" >
@@ -19,16 +23,20 @@
             <!--h3>This is main page</h3-->
             <div id="mainView">
             	<div id="addTransaction">
-                	<h1>Thêm giao dịch</h1>
+                	<a href="#addTransactionPage"><img src="images/add.jpg" alt="Thêm giao dịch"/></a>
+                	<!--h1><a href="#addTransactionPage">Thêm giao dịch</a></h1-->
                 </div>
                 <div id="listTransaction">
-                	<h1>Sổ chi tiêu</h1>
+               	 	<a href="#listTransaction"><img src="images/money_icon_200x200.png" alt="Sổ chi tiêu"/></a>
+                	<!--h1>Sổ chi tiêu</h1-->
                 </div>
                 <div id="listDebts">
-                	<h1>Sổ nợ</h1>
+               		<a href="#listDebts"><img src="images/loan.png" alt="Sổ nợ"/></a>
+                	<!--h1>Sổ nợ</h1-->
                 </div>
                 <div id="trends">
-                	<h1>Thống kê</h1>
+	                <a href="#trends"><img src="images/statistics.png" alt="Thống kê"/></a>
+                	<!--h1>Thống kê</h1-->
                 </div>
             </div>
         </div>
@@ -43,10 +51,43 @@
             </div-->
         </div>
 	</div>
+    <div id="addTransactionPage" data-role="page" >
+        <div data-role="header" data-id="persistheader" 
+        data-position="fixed" id="mainpageHeader">
+	        <h1 id="accountDisplay">Thêm giao dịch</h1>
+    	</div>
+        <div data-role="content" id="mainContent">
+            <!--h3>This is main page</h3-->
+            <div id="mainView">
+            	<form >
+                    <select name="category" id="category">
+                    </select>
+                    <input type="number" id="amount" step="1" min="0" placeholder='Nhập số tiền' >
+                    <fieldset class="ui-field-contain">
+                    <label for="textarea">Ghi chú:</label>
+					<textarea cols="40" rows="8" name="txtNote" id="txtNote"></textarea>
+                    </fieldset>
+                    <input type="text" data-role="date" id="dateTrans" placeholder='Ngày giao dịch'>
+
+            </div>
+        </div>
+        <div data-role="footer" data-id="persistfooter" 
+        data-position="fixed" >
+            <div data-role="navbar">
+                <ul>
+                	<li><input type="submit" value="Lưu" onClick="onCreateTransaction()"></li>
+                    <li><a href="#mainpage">Hủy bỏ</a></li>
+                </ul>
+            </div>
+                </form>            
+        </div>
+	</div>
 </body>
 </html>
 <script>
 	$(document).ready(function(){
+		$("#dateTrans").datepicker();
+		
 		var db = window.openDatabase("myDatabase", "1.0", "My WebSQL database", 5*1024*1024);
 		
 		if(!db) {
@@ -55,6 +96,6 @@
 		}
 		
 		getAccountDisplay(db);
-		
+		getCategory(db);	
 	});
 </script>
