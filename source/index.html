@@ -37,6 +37,10 @@
 		}*/
 		
 	$(document).ready(function(){
+		
+		// Run in mode debug or not
+		debugging = 0;
+		
 		var conf = false;
 		var accountExisted = false;
 		
@@ -115,50 +119,56 @@
 			}
 		}
 		
-		/*db.transaction(
-			function(tx){
-				tx.executeSql(
-					"DROP TABLE AccountInfo",
-					[],
-					onSuccessExecuteSql,
-					onError
-				),
-				tx.executeSql(
-					"DROP TABLE Category",
-					[],
-					onSuccessExecuteSql,
-					onError
-				),
-				tx.executeSql(
-					"DROP TABLE Config",
-					[],
-					onSuccessExecuteSql,
-					onError
-				),
-				tx.executeSql(
-					"DROP TABLE Transactions",
-					[],
-					onSuccessExecuteSql,
-					onError
-				)
-			},
-			onError,
-			onReadyTransaction
-		)*/
-				
-		// Get config
-		db.transaction(
-					function(tx){				
-						tx.executeSql(
-						"SELECT * FROM Config",
+		if (debugging == 1)
+		{
+			db.transaction(
+				function(tx){
+					tx.executeSql(
+						"DROP TABLE AccountInfo",
 						[],
-						IsConfigReturn,
+						onSuccessExecuteSql,
+						onError
+					),
+					tx.executeSql(
+						"DROP TABLE Category",
+						[],
+						onSuccessExecuteSql,
+						onError
+					),
+					tx.executeSql(
+						"DROP TABLE Config",
+						[],
+						onSuccessExecuteSql,
+						onError
+					),
+					tx.executeSql(
+						"DROP TABLE Transactions",
+						[],
+						onSuccessExecuteSql,
 						onError
 					)
 				},
 				onError,
 				onReadyTransaction
-			);
+			)
+		}
+				
+		// Get config
+		if ( debugging == 0)
+		{
+			db.transaction(
+						function(tx){				
+							tx.executeSql(
+							"SELECT * FROM Config",
+							[],
+							IsConfigReturn,
+							onError
+						)
+					},
+					onError,
+					onReadyTransaction
+				);
+		}
 		/*db.transaction(
 					function(tx){				
 						tx.executeSql(

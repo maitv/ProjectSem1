@@ -23,7 +23,7 @@
             <!--h3>This is main page</h3-->
             <div id="mainView">
             	<div id="addTransaction">
-                	<a href="#addTransactionPage"><img src="images/add_150_150.png" alt="Thêm giao dịch"/></a>
+                	<a href="#addTransactionPage" datarel=><img src="images/add_150_150.png" alt="Thêm giao dịch"/></a>
                 	<!--h1><a href="#addTransactionPage">Thêm giao dịch</a></h1-->
                 </div>
                 <div id="listTransaction">
@@ -51,7 +51,7 @@
             </div-->
         </div>
 	</div>
-    <div id="addTransactionPage" data-role="page" >
+    <div id="addTransactionPage" data-role="page" data-dialog="true" >
         <div data-role="header" data-id="persistheader" 
         data-position="fixed" id="mainpageHeader">
 	        <h1 id="accountDisplay">Thêm giao dịch</h1>
@@ -80,6 +80,66 @@
                 </ul>
             </div>
                 </form>            
+        </div>
+	</div>
+    
+    <!-- list transaction -->
+    <div id="listTransaction" data-role="page" >
+        <div data-role="header" data-id="persistheader" 
+        data-position="fixed" id="mainpageHeader">
+	        <a href="#mainpage" data-icon="arrow-l">Quay lại</a>
+	        <h1 id="accountDisplay">Sổ chi tiêu</h1>
+    	</div>
+        <div data-role="content" id="mainContent">
+            <!--h3>This is main page</h3-->
+            <div id="mainView">
+            </div>
+        </div>
+        <div data-role="footer" data-id="persistfooter" 
+        data-position="fixed" >
+            <div data-role="navbar">
+               
+            </div>         
+        </div>
+	</div>
+    
+    <!-- list debts -->
+    <div id="listDebts" data-role="page" >
+        <div data-role="header" data-id="persistheader" 
+        data-position="fixed" id="mainpageHeader">
+	        <a href="#mainpage" data-icon="arrow-l">Quay lại</a>
+	        <h1 id="accountDisplay">Sổ ghi nợ</h1>
+    	</div>
+        <div data-role="content" id="mainContent">
+            <!--h3>This is main page</h3-->
+            <div id="mainView">
+            </div>
+        </div>
+        <div data-role="footer" data-id="persistfooter" 
+        data-position="fixed" >
+            <div data-role="navbar">
+               
+            </div>         
+        </div>
+	</div>
+    
+    <!-- statistic -->
+    <div id="trends" data-role="page" >
+        <div data-role="header" data-id="persistheader" 
+        data-position="fixed" id="mainpageHeader">
+	        <a href="#mainpage" data-icon="arrow-l">Quay lại</a>
+	        <h1 id="accountDisplay">Thống kê</h1>
+    	</div>
+        <div data-role="content" id="mainContent">
+            <!--h3>This is main page</h3-->
+            <div id="mainView">
+            </div>
+        </div>
+        <div data-role="footer" data-id="persistfooter" 
+        data-position="fixed" >
+            <div data-role="navbar">
+               
+            </div>         
         </div>
 	</div>
 </body>

@@ -115,7 +115,7 @@ function SetConfigured(db){
 		function(tx){
 		tx.executeSql(
 			"INSERT INTO Category(CategoryName, CategoryType, CategoryTypeSpecify, isDefault) VALUES(?, ?, ?, ?)",
-			['Khác', 1, 1, 0],
+			['Khác', 0, 1, 0],
 			onSuccessExecuteSql,
 			onErrorCommon
 		)
