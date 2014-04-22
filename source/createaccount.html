@@ -108,7 +108,7 @@
 								function(tx){				
 										tx.executeSql(
 										"INSERT INTO Transactions(Amount, Description, CategoryID, TransactionDate) VALUES(?, ?, ?, ?)",
-										[accountBalance, "Khởi tạo tài khoản", 7, dateTrans],
+										[accountBalance, "Khởi tạo tài khoản", 1, dateTrans],
 										onSuccessCreateAccount,
 										onErrorCommon
 									)

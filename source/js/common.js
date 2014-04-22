@@ -29,11 +29,25 @@ function SetConfigured(db){
 	);
 	
 	// Insert to category table
+	// Initialization category
+	db.transaction(
+		function(tx){
+		tx.executeSql(
+			"INSERT INTO Category(CategoryName, CategoryType, CategoryTypeSpecify, isInitialization) VALUES(?, ?, ?, ?)",
+			['Khởi tạo', 0, 1, 1],
+			onSuccessExecuteSql,
+			onErrorCommon
+		)
+		},
+		onErrorCommon,
+		onReadyTransaction
+	);
+	
 	// Income	
 	db.transaction(
 		function(tx){
 		tx.executeSql(
-			"INSERT INTO Category(CategoryName, CategoryType, CategoryTypeSpecify, isDefault) VALUES(?, ?, ?, ?)",
+			"INSERT INTO Category(CategoryName, CategoryType, CategoryTypeSpecify, isInitialization) VALUES(?, ?, ?, ?)",
 			['Lương tháng', 0, 1, 0],
 			onSuccessExecuteSql,
 			onErrorCommon
@@ -46,7 +60,7 @@ function SetConfigured(db){
 	db.transaction(
 		function(tx){
 		tx.executeSql(
-			"INSERT INTO Category(CategoryName, CategoryType, CategoryTypeSpecify, isDefault) VALUES(?, ?, ?, ?)",
+			"INSERT INTO Category(CategoryName, CategoryType, CategoryTypeSpecify, isInitialization) VALUES(?, ?, ?, ?)",
 			['Thưởng', 0, 1, 0],
 			onSuccessExecuteSql,
 			onErrorCommon
@@ -60,7 +74,7 @@ function SetConfigured(db){
 	db.transaction(
 		function(tx){
 		tx.executeSql(
-			"INSERT INTO Category(CategoryName, CategoryType, CategoryTypeSpecify, isDefault) VALUES(?, ?, ?, ?)",
+			"INSERT INTO Category(CategoryName, CategoryType, CategoryTypeSpecify, isInitialization) VALUES(?, ?, ?, ?)",
 			['Tiền ăn', 1, 1, 0],
 			onSuccessExecuteSql,
 			onErrorCommon
@@ -73,7 +87,7 @@ function SetConfigured(db){
 	db.transaction(
 		function(tx){
 		tx.executeSql(
-			"INSERT INTO Category(CategoryName, CategoryType, CategoryTypeSpecify, isDefault) VALUES(?, ?, ?, ?)",
+			"INSERT INTO Category(CategoryName, CategoryType, CategoryTypeSpecify, isInitialization) VALUES(?, ?, ?, ?)",
 			['Đổ xăng', 1, 1, 0],
 			onSuccessExecuteSql,
 			onErrorCommon
@@ -87,7 +101,7 @@ function SetConfigured(db){
 	db.transaction(
 		function(tx){
 		tx.executeSql(
-			"INSERT INTO Category(CategoryName, CategoryType, CategoryTypeSpecify, isDefault) VALUES(?, ?, ?, ?)",
+			"INSERT INTO Category(CategoryName, CategoryType, CategoryTypeSpecify, isInitialization) VALUES(?, ?, ?, ?)",
 			['Tiền nhà', 1, 1, 0],
 			onSuccessExecuteSql,
 			onErrorCommon
@@ -100,7 +114,7 @@ function SetConfigured(db){
 	db.transaction(
 		function(tx){
 		tx.executeSql(
-			"INSERT INTO Category(CategoryName, CategoryType, CategoryTypeSpecify, isDefault) VALUES(?, ?, ?, ?)",
+			"INSERT INTO Category(CategoryName, CategoryType, CategoryTypeSpecify, isInitialization) VALUES(?, ?, ?, ?)",
 			['Du lịch', 1, 1, 0],
 			onSuccessExecuteSql,
 			onErrorCommon
@@ -111,7 +125,7 @@ function SetConfigured(db){
 	);
 	
 	// Other spent
-	db.transaction(
+	/*db.transaction(
 		function(tx){
 		tx.executeSql(
 			"INSERT INTO Category(CategoryName, CategoryType, CategoryTypeSpecify, isDefault) VALUES(?, ?, ?, ?)",
@@ -122,7 +136,7 @@ function SetConfigured(db){
 		},
 		onErrorCommon,
 		onReadyTransaction
-	);
+	);*/
 	
 	// Other spent
 	/*db.transaction(
@@ -143,7 +157,7 @@ function SetConfigured(db){
 	db.transaction(
 		function(tx){
 		tx.executeSql(
-			"INSERT INTO Category(CategoryName, CategoryType, CategoryTypeSpecify, isDefault) VALUES(?, ?, ?, ?)",
+			"INSERT INTO Category(CategoryName, CategoryType, CategoryTypeSpecify, isInitialization) VALUES(?, ?, ?, ?)",
 			['Vay tiền', 0, 0, 0],
 			onSuccessExecuteSql,
 			onErrorCommon
@@ -156,7 +170,7 @@ function SetConfigured(db){
 	db.transaction(
 		function(tx){
 		tx.executeSql(
-			"INSERT INTO Category(CategoryName, CategoryType, CategoryTypeSpecify, isDefault) VALUES(?, ?, ?, ?)",
+			"INSERT INTO Category(CategoryName, CategoryType, CategoryTypeSpecify, isInitialization) VALUES(?, ?, ?, ?)",
 			['Cho vay', 1, 0, 0],
 			onSuccessExecuteSql,
 			onErrorCommon
@@ -203,7 +217,7 @@ function createTableCategory(db){
 	db.transaction(
 		function(tx){
 			tx.executeSql(
-				"CREATE TABLE IF NOT EXISTS Category (CategoryID INTEGER PRIMARY KEY AUTOINCREMENT, CategoryName TEXT, CategoryType INTEGER, CategoryTypeSpecify INTEGER, isDefault INTEGER)",
+				"CREATE TABLE IF NOT EXISTS Category (CategoryID INTEGER PRIMARY KEY AUTOINCREMENT, CategoryName TEXT, CategoryType INTEGER, CategoryTypeSpecify INTEGER, isInitialization INTEGER, isDefault INTEGER)",
 				[],
 				onSuccessExecuteSql,
 				onErrorCommon
@@ -272,7 +286,7 @@ function getCategory(db){
 	db.transaction(
 					function(tx){				
 						tx.executeSql(
-						"SELECT * FROM Category",
+						"SELECT * FROM Category WHERE CategoryID > 1",
 						[],
 						getCategoryDisplay,
 						onErrorCommon
@@ -305,7 +319,7 @@ function resetFields(){
 
 function onCreateTransactionSuccess(){
 	resetFields();
-	window.location.href = '#mainpage';
+	window.location.href = '#addTransactionSuccess';
 }
 
 function onCreateTransaction(){
@@ -322,9 +336,13 @@ function onCreateTransaction(){
 		note = document.getElementById('txtNote').value;
 		dateTrans = document.getElementById('dateTrans').value;
 		
-		if( categoryID == 0 || amount == 0 || dateTrans == null)
+		//alert('Kiểm tra lại thể loại/ nhập số tiền ' + categoryID + " " + amount + " " + note + " " + dateTrans);
+		
+		if( categoryID == 0 || isNaN(amount) ||
+			note == "" || dateTrans == "" )
 		{
-			alert('Kiểm tra lại thể loại/ nhập số tiền');
+			alert('Kiểm tra lại thông tin thể loại/ nhập số tiền/ ghi chú/ ngày giao dịch!');
+			return;
 		}
 		
 		db.transaction(
@@ -342,4 +360,65 @@ function onCreateTransaction(){
 	}
 }
 
+function getListTransactionDisplayResult(tx, results){
+	if(results.rows.length > 0){
+		var row = results.rows.item(0);
+		alert(1);
+		//return "Exists";
+		$("#listTransactionDisplay").text(row['TransactionDate']);
+	}else{
+		//return "Tài khoản của tôi";
+		alert(2);
+		$("#listTransactionDisplay").text("Sổ chi tiêu");
+	}
+}
 
+function getListTransaction(db){
+	// Get month now
+	var date = new Date();
+	var currentMonth = date.getMonth() + 1 ;
+	
+	/*db.transaction(
+					function(tx){				
+						tx.executeSql(
+						"SELECT Category.CategoryName, Transactions.Description FROM Category INNER JOIN Transactions\
+						on Category.CategoryID=Transactions.CategoryID WHERE Transactions.CategoryID=? GROUP BY  Category.CategoryName, Transactions.Description",
+						[1],
+						getListTransactionDisplayResult,
+						onErrorCommon
+					)
+				},
+				onErrorCommon,
+				onReadyTransaction
+			);
+	*/		
+	
+	db.transaction(
+			function(tx){				
+				tx.executeSql(
+				"SELECT * FROM Transactions WHERE strftime('%m', 'TransactionDate') = ?",
+				[currentMonth],
+				getListTransactionDisplayResult,
+				onErrorCommon
+			)
+		},
+		onErrorCommon,
+		onReadyTransaction
+	);
+	
+			
+	/*db.transaction(
+			function(tx){				
+				tx.executeSql(
+				"SELECT Category.CategoryName, Transactions.Description, Transactions.TransactionDate AS dateTrans  FROM Category INNER JOIN Transactions\
+				on Category.CategoryID=Transactions.CategoryID WHERE Transactions.CategoryID=? GROUP BY  Category.CategoryName, Transactions.Description, Transactions.TransactionDate\
+				HAVING dateTrans=?",
+				[1, currentMonth],
+				getListTransactionDisplayResult,
+				onErrorCommon
+			)
+		},
+		onErrorCommon,
+		onReadyTransaction
+	);*/
+}

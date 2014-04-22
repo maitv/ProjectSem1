@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
+<title>Untitled Document</title>
+<link rel="stylesheet" href="js/jquery.mobile-1.4.2/jquery.mobile-1.4.2.min.css">
+<script src="js/jquery-1.11.0.min.js"></script>
+<script src="js/jquery.mobile-1.4.2/jquery.mobile-1.4.2.min.js"></script>
+<script src="js/jquery-1.11.0.min.js"></script>
+<script src="js/common.js"></script>
+<link rel="stylesheet" href="css/mainpage.css" >
+
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
+<script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+<script src="http://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="inner">Hello</div>
+        <div class="inner">Goodbye</div>
+    </div>
+    <div class="ui-grid-d">
+        <div class="ui-block-a">Block A</div>
+        <div class="ui-block-b">Block B</div>
+        <div class="ui-block-c">Block C</div>
+        <div class="ui-block-d">Block D</div>
+        <div class="ui-block-e">Block E</div>
+	</div><!-- /grid-d -->
+
+</body>
+<script>
+	$(document).ready(function(){
+		$( ".container" ).empty();	
+		var d = new Date();
+		var n = d.getMonth();
+		alert(n);
+	});
+</script>
+</html>

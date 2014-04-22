@@ -63,10 +63,7 @@
                     <select name="category" id="category">
                     </select>
                     <input type="number" id="amount" step="1" min="0" placeholder='Nhập số tiền' >
-                    <fieldset class="ui-field-contain">
-                    <label for="textarea">Ghi chú</label>
-					<textarea cols="40" rows="8" name="txtNote" id="txtNote"></textarea>
-                    </fieldset>
+					<textarea cols="40" rows="8" name="txtNote" id="txtNote" placeholder='Ghi chú' ></textarea>
                     <input type="text" data-role="date" id="dateTrans" placeholder='Ngày giao dịch'>
 
             </div>
@@ -83,12 +80,22 @@
         </div>
 	</div>
     
+    <div data-role="page" data-dialog="true" id="addTransactionSuccess" data-close-btn="none">
+        <div data-role="header">
+       		<h1>Thông báo</h1>
+        </div>
+        
+        <div data-role="main" class="ui-content" style="text-align:center">
+        	<p>Thêm mới thành công ! </p><a href="#mainpage">Đóng lại</a>
+        </div>
+    </div> 
+    
     <!-- list transaction -->
     <div id="listTransaction" data-role="page" >
         <div data-role="header" data-id="persistheader" 
         data-position="fixed" id="mainpageHeader">
 	        <a href="#mainpage" data-icon="arrow-l">Quay lại</a>
-	        <h1 id="accountDisplay">Sổ chi tiêu</h1>
+	        <h1 id="listTransactionDisplay">Sổ chi tiêu</h1>
     	</div>
         <div data-role="content" id="mainContent">
             <!--h3>This is main page</h3-->
@@ -108,7 +115,7 @@
         <div data-role="header" data-id="persistheader" 
         data-position="fixed" id="mainpageHeader">
 	        <a href="#mainpage" data-icon="arrow-l">Quay lại</a>
-	        <h1 id="accountDisplay">Sổ ghi nợ</h1>
+	        <h1 id="alistDebtsDisplay">Sổ ghi nợ</h1>
     	</div>
         <div data-role="content" id="mainContent">
             <!--h3>This is main page</h3-->
@@ -157,5 +164,6 @@
 		
 		getAccountDisplay(db);
 		getCategory(db);	
+		getListTransaction(db);
 	});
 </script>
