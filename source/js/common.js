@@ -1,6 +1,18 @@
 // JavaScript Document
 
-isAccountExist = false;
+// Global variables
+var currentMonth = 0;
+var currentYear = 0;
+var previousMonth = 0;
+var nextMonth = 0;
+
+// Set current month
+var date = new Date();
+currentMonth = date.getMonth();	
+previousMonth = (currentMonth + 12 - 1)%12;
+nextMonth = (currentMonth + 1)%12;
+//currentMonth = 11 ;	
+currentYear = date.getYear();
 
 function onReadyTransaction( ){
 	console.log( 'Transaction completed' )
@@ -319,6 +331,9 @@ function resetFields(){
 
 function onCreateTransactionSuccess(){
 	resetFields();
+	
+	// Rebuild list transaction
+	getListTransaction();
 	window.location.href = '#addTransactionSuccess';
 }
 
@@ -360,65 +375,124 @@ function onCreateTransaction(){
 	}
 }
 
+function updateMonthDisplay(){
+	previousMonth = (currentMonth + 12 - 1)%12;
+	nextMonth = (currentMonth + 1)%12;
+	
+	var cur= currentMonth + 1;
+	var pre= previousMonth + 1;
+	var next= nextMonth + 1;
+	
+	$("#currentMonth").text("Tháng " + cur);
+	$("#previousMonth").text("Tháng " + pre);
+	$("#nextMonth").text("Tháng " + next);
+}
+
 function getListTransactionDisplayResult(tx, results){
+	$("#listTransactionmainView").empty();
+	updateMonthDisplay();
+	
 	if(results.rows.length > 0){
-		var row = results.rows.item(0);
-		alert(1);
 		//return "Exists";
-		$("#listTransactionDisplay").text(row['TransactionDate']);
+		// Get month now
+		
+		var len = results.rows.length;
+		var month = 0;
+		var cnt = 0;
+		var isNewDay = true;
+		var currentDate = 0;
+		var subDescription = "";
+		
+		for( cnt = 0; cnt < len; cnt++){
+			var row = results.rows.item(cnt);
+			var da = new Date(row["TransactionDate"]);
+			
+			if(row['Description'].length >= 20){
+				subDescription = row['Description'].substring(0, 20) + "...";
+			}else{
+				subDescription = row['Description'];
+			}
+			
+			// Get current day
+			currentDate = da.getDate();
+			
+			// Get date and month
+			if( da.getMonth() == currentMonth){			
+				if(isNewDay){
+					$("#listTransactionmainView").append("<div data-role='collapsible' data-collapsed-icon='arrow-r' data-expanded-icon='arrow-d' data-inset='false'>");
+					$("#listTransactionmainView").append('<div data-role="collapsible">');
+					$("#listTransactionmainView").append('<h2>' + row['CategoryName'] + '</h2>');
+					$("#listTransactionmainView").append('<ul data-role="listview">');
+				}
+				
+				// print list view 
+				$("#listTransactionmainView").append("<li><a href='#'>" + subDescription + "</a></li>");
+				
+				var rw = results.rows.item((cnt+1));
+				var newDate = new Date(rw["TransactionDate"]);
+				var nextDate = newDate.getDate();
+				
+				if(currentDate != nextDate){
+					$("#listTransactionmainView").append("</ul>");
+					//$("#listTransactionmainView").append("</div>");
+					$("#listTransactionmainView").append("</div>");
+					isNewDay = true;
+				}else{
+					isNewDay = false;
+				}
+			}
+		}
+	/*	
+		$("#listTransactionmainView").append("<div data-role='collapsible-set' data-inset='false'>");
+		$("#listTransactionmainView").append('<div data-role="collapsible">\
+					<h2>Mailbox</h2>\
+					<ul data-role="listview">\
+						<li><a href="#">Inbox <span class="ui-li-count">12</span></a></li>\
+						<li><a href="#">Outbox <span class="ui-li-count">0</span></a></li>\
+						<li><a href="#">Drafts <span class="ui-li-count">4</span></a></li>\
+						<li><a href="#">Sent <span class="ui-li-count">328</span></a></li>\
+						<li><a href="#">Trash <span class="ui-li-count">62</span></a></li>\
+					</ul>\
+				</div>');
+		$("#listTransactionmainView").append("</div>");*/
+		
 	}else{
 		//return "Tài khoản của tôi";
-		alert(2);
-		$("#listTransactionDisplay").text("Sổ chi tiêu");
+		$("#listTransactionmainView").append("<p>"+"Không có chi tiêu nào trong tháng này :("+"</p>");
 	}
 }
 
-function getListTransaction(db){
-	// Get month now
-	var date = new Date();
-	var currentMonth = date.getMonth() + 1 ;
+function getListTransaction(){	
+	db = getDb();
 	
-	/*db.transaction(
+	db.transaction(
 					function(tx){				
 						tx.executeSql(
-						"SELECT Category.CategoryName, Transactions.Description FROM Category INNER JOIN Transactions\
-						on Category.CategoryID=Transactions.CategoryID WHERE Transactions.CategoryID=? GROUP BY  Category.CategoryName, Transactions.Description",
-						[1],
+						"SELECT Category.CategoryName, Category.CategoryType, Category.CategoryTypeSpecify, Transactions.Description, Transactions.Amount, Transactions.TransactionDate\
+						FROM Category INNER JOIN Transactions on Category.CategoryID=Transactions.CategoryID GROUP BY  Category.CategoryName, Category.CategoryType, Category.CategoryTypeSpecify,\
+  					    Transactions.Description, Transactions.Amount, Transactions.TransactionDate ORDER BY Transactions.TransactionDate ASC",
+						[],
 						getListTransactionDisplayResult,
 						onErrorCommon
 					)
 				},
 				onErrorCommon,
 				onReadyTransaction
-			);
-	*/		
+			);	
+}
+
+function onPreviousMonth(){
+	// Set current month
+	currentMonth = previousMonth;
+	updateMonthDisplay();
+}
+
+function onCurrentMonth(){
 	
-	db.transaction(
-			function(tx){				
-				tx.executeSql(
-				"SELECT * FROM Transactions WHERE strftime('%m', 'TransactionDate') = ?",
-				[currentMonth],
-				getListTransactionDisplayResult,
-				onErrorCommon
-			)
-		},
-		onErrorCommon,
-		onReadyTransaction
-	);
-	
-			
-	/*db.transaction(
-			function(tx){				
-				tx.executeSql(
-				"SELECT Category.CategoryName, Transactions.Description, Transactions.TransactionDate AS dateTrans  FROM Category INNER JOIN Transactions\
-				on Category.CategoryID=Transactions.CategoryID WHERE Transactions.CategoryID=? GROUP BY  Category.CategoryName, Transactions.Description, Transactions.TransactionDate\
-				HAVING dateTrans=?",
-				[1, currentMonth],
-				getListTransactionDisplayResult,
-				onErrorCommon
-			)
-		},
-		onErrorCommon,
-		onReadyTransaction
-	);*/
+}
+
+function onNextMonth(){
+	// Set current month
+	currentMonth = nextMonth;
+	updateMonthDisplay();
 }

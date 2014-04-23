@@ -22,19 +22,19 @@
         <div data-role="content" id="mainContent">
             <!--h3>This is main page</h3-->
             <div id="mainView">
-            	<div id="addTransaction">
+            	<div id="addTransactionIcon">
                 	<a href="#addTransactionPage" datarel=><img src="images/add_150_150.png" alt="Thêm giao dịch"/></a>
                 	<!--h1><a href="#addTransactionPage">Thêm giao dịch</a></h1-->
                 </div>
-                <div id="listTransaction">
+                <div id="listTransactionIcon">
                	 	<a href="#listTransaction"><img src="images/listTran_150_150.png" alt="Sổ chi tiêu"/></a>
                 	<!--h1>Sổ chi tiêu</h1-->
                 </div>
-                <div id="listDebts">
+                <div id="listDebtsIcon">
                		<a href="#listDebts"><img src="images/loan_150_150.png" alt="Sổ nợ"/></a>
                 	<!--h1>Sổ nợ</h1-->
                 </div>
-                <div id="trends">
+                <div id="trendsIcon">
 	                <a href="#trends"><img src="images/statistic_150_150.png" alt="Thống kê"/></a>
                 	<!--h1>Thống kê</h1-->
                 </div>
@@ -53,12 +53,11 @@
 	</div>
     <div id="addTransactionPage" data-role="page" data-dialog="true" >
         <div data-role="header" data-id="persistheader" 
-        data-position="fixed" id="mainpageHeader">
+        data-position="fixed" id="addTransactionPagemainpageHeader">
 	        <h1 id="accountDisplay">Thêm giao dịch</h1>
     	</div>
-        <div data-role="content" id="mainContent">
-            <!--h3>This is main page</h3-->
-            <div id="mainView">
+        <div data-role="content" id="addTransactionPagemainContent">
+            <div id="addTransactionPagemainView">
             	<form >
                     <select name="category" id="category">
                     </select>
@@ -72,8 +71,9 @@
         data-position="fixed" >
             <div data-role="navbar">
                 <ul>
-                	<li><input type="submit" value="Lưu" onClick="onCreateTransaction()"></li>
-                    <li><a href="#mainpage">Hủy bỏ</a></li>
+                	<li><!--input type="submit" value="Lưu" onClick="onCreateTransaction()" class="ui-btn ui-icon-delete ui-btn-icon-left"></li-->
+                    <a href="#" data-role="button" data-icon="check" onClick="onCreateTransaction()">Lưu</a></li>
+                    <li><a href="#mainpage" data-role="button" data-icon="delete" >Hủy bỏ</a></li>
                 </ul>
             </div>
                 </form>            
@@ -93,13 +93,21 @@
     <!-- list transaction -->
     <div id="listTransaction" data-role="page" >
         <div data-role="header" data-id="persistheader" 
-        data-position="fixed" id="mainpageHeader">
-	        <a href="#mainpage" data-icon="arrow-l">Quay lại</a>
+        data-position="fixed" id="listTransactionmainpageHeader">
+	        <!--a href="#mainpage" data-icon="arrow-l">Quay lại</a-->
+            <a href="#mainpage" data-role="button" data-icon="arrow-l" >Quay lại</a>
 	        <h1 id="listTransactionDisplay">Sổ chi tiêu</h1>
+            <div data-role="navbar">
+                <ul>
+                    <li><a href="#" id="previousMonth" onClick="onPreviousMonth()">Tháng trước</a></li>
+                    <li><a href="#" id="currentMonth" onClick="onCurrentMonth()">Tháng này</a></li>
+                    <li><a href="#" id="nextMonth" onClick="onNextMonth()">Tháng sau</a></li>
+                </ul>
+            </div>
     	</div>
-        <div data-role="content" id="mainContent">
+        <div data-role="content" id="listTransactionmainContent">
             <!--h3>This is main page</h3-->
-            <div id="mainView">
+            <div id="listTransactionmainView">
             </div>
         </div>
         <div data-role="footer" data-id="persistfooter" 
@@ -113,13 +121,13 @@
     <!-- list debts -->
     <div id="listDebts" data-role="page" >
         <div data-role="header" data-id="persistheader" 
-        data-position="fixed" id="mainpageHeader">
+        data-position="fixed" id="listDebtsmainpageHeader">
 	        <a href="#mainpage" data-icon="arrow-l">Quay lại</a>
 	        <h1 id="alistDebtsDisplay">Sổ ghi nợ</h1>
     	</div>
-        <div data-role="content" id="mainContent">
+        <div data-role="content" id="listDebtsmainContent">
             <!--h3>This is main page</h3-->
-            <div id="mainView">
+            <div id="listDebtsmainView">
             </div>
         </div>
         <div data-role="footer" data-id="persistfooter" 
@@ -133,13 +141,13 @@
     <!-- statistic -->
     <div id="trends" data-role="page" >
         <div data-role="header" data-id="persistheader" 
-        data-position="fixed" id="mainpageHeader">
+        data-position="fixed" id="trendsmainpageHeader">
 	        <a href="#mainpage" data-icon="arrow-l">Quay lại</a>
 	        <h1 id="accountDisplay">Thống kê</h1>
     	</div>
-        <div data-role="content" id="mainContent">
+        <div data-role="content" id="trendsmainContent">
             <!--h3>This is main page</h3-->
-            <div id="mainView">
+            <div id="trendsmainView">
             </div>
         </div>
         <div data-role="footer" data-id="persistfooter" 
@@ -164,6 +172,6 @@
 		
 		getAccountDisplay(db);
 		getCategory(db);	
-		getListTransaction(db);
+		getListTransaction();
 	});
 </script>

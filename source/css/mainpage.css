@@ -1,42 +1,26 @@
 @charset "utf-8";
 /* CSS Document */
-#mainpageHeader{
+#mainpageHeader, #addTransactionPagemainpageHeader, #listTransactionmainpageHeader, #listDebtsmainpageHeader, #trendsmainpageHeader{
 	color:#FFF;
 	background-color:#3C3	;
 	font-weight:bold;
 	font-size:1.2em;
 }
 
-#mainContent{
+#mainContent, #addTransactionPagemainContent, #listTransactionmainContent, #listDebtsmainContent, #trendsmainContent{
 	text-align:center;
 }
 
-#mainView{
+#mainView, #addTransactionPagemainView, #listTransactionmainView, #listDebtsmainView, #trendsmainView{
 	width:100%;	
 	height:100%;
 }
 
-#addTransaction,  #listDebts,#listTransaction, #trends{
+#addTransactionIcon,  #listTransactionIcon, #listDebtsIcon, #trendsIcon{
 	float:left;
 	margin-left:5%;
 	margin-right: 5%;
 	margin-bottom: 40px;
 	width:40%;
 	height: 200px;
-}
-
-#addTransaction{
-	/*background-color:#0C6;*/
-}
-
-#listDebts{
-	/*background-color:#F00;*/
-}
-
-#listTransaction{
-	/*background-color:#936;*/
-}
-
-#trends{
-	/*background-color:#FC6;*/
 }
