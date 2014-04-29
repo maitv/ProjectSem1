@@ -434,6 +434,9 @@ function getListTransactionDisplayResult(tx, results){
 				//alert('1');
 			$("#ulListTransaction").append("<li><a href='#'>" + subDescription + "</a></li>");		
 		//	alert('2');	
+				alert('1');
+			$("#ulListTransaction").append("<li><a href='#'>" + subDescription + "</a></li>");		
+			alert('2');	
 		/*		if(isNewDay){
 					$("#listTransactionmainView").append("<div data-role='collapsible' data-collapsed-icon='arrow-r' data-expanded-icon='arrow-d' data-inset='false'>");
 					$("#listTransactionmainView").append('<div data-role="collapsible">');
@@ -460,6 +463,8 @@ function getListTransactionDisplayResult(tx, results){
 			
 			// update
 //			$('#ulListTransaction').listview('refresh');
+			$('#ulListTransaction').listview('refresh');
+			alert('3');
 		}
 	}else{
 		//return "Tài khoản của tôi";

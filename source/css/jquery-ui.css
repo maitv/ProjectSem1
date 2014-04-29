@@ -799,12 +799,18 @@ body .ui-tooltip {
 	font-family: Verdana,Arial,sans-serif;
 	font-size: 1em;
 }
+.ui-widget-content {
+	border: 1px solid #aaaaaa;
+	background: #ffffff url(images/ui-bg_flat_75_ffffff_40x100.png) 50% 50% repeat-x;
+	color: #222222;
+}
 .ui-widget-content a {
 	color: #222222;
 }
 .ui-widget-header {
 	border: 1px solid #aaaaaa;
 	background: #cccccc 50% 50% repeat-x;
+	background: #cccccc url(images/ui-bg_highlight-soft_75_cccccc_1x100.png) 50% 50% repeat-x;
 	color: #222222;
 	font-weight: bold;
 }
@@ -923,7 +929,6 @@ body .ui-tooltip {
 ----------------------------------*/
 
 /* states and images */
-/*
 .ui-icon {
 	width: 16px;
 	height: 16px;
@@ -951,7 +956,7 @@ body .ui-tooltip {
 .ui-state-error .ui-icon,
 .ui-state-error-text .ui-icon {
 	background-image: url(images/ui-icons_cd0a0a_256x240.png);
-}*/
+}
 
 /* positioning */
 .ui-icon-blank { background-position: 16px 16px; }
