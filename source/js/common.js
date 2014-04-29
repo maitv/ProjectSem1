@@ -285,6 +285,9 @@ function getCategoryDisplay(tx, results){
 	var len = results.rows.length, i;
 	var i;
 	
+	// initialize category menu
+	$('#category').selectmenu();
+	
 	// Default
 	$("#category").append(new Option("Chọn thể loại", 0));
 	$("#category").val(0);
@@ -292,9 +295,16 @@ function getCategoryDisplay(tx, results){
 	for (i = 0; i < len; i++) {
 		$("#category").append(new Option(results.rows.item(i).CategoryName, results.rows.item(i).CategoryID));
 	}
+	
+	// Refresh menu 
+	$('#category').selectmenu('refresh');
+/*	var newOption = "<option value='dynamic'>Dynamic Entry</option>";
+    $("#category").append(newOption).selectmenu('refresh');
+	alert('after refresh menu');*/
 }
 
 function getCategory(db){
+	
 	db.transaction(
 					function(tx){				
 						tx.executeSql(
@@ -416,9 +426,15 @@ function getListTransactionDisplayResult(tx, results){
 			// Get current day
 			currentDate = da.getDate();
 			
+			$listID = 'date'+currentDate;
+			
+			
 			// Get date and month
-			if( da.getMonth() == currentMonth){			
-				if(isNewDay){
+			if( da.getMonth() == currentMonth){
+				//alert('1');
+			$("#ulListTransaction").append("<li><a href='#'>" + subDescription + "</a></li>");		
+		//	alert('2');	
+		/*		if(isNewDay){
 					$("#listTransactionmainView").append("<div data-role='collapsible' data-collapsed-icon='arrow-r' data-expanded-icon='arrow-d' data-inset='false'>");
 					$("#listTransactionmainView").append('<div data-role="collapsible">');
 					$("#listTransactionmainView").append('<h2>' + row['CategoryName'] + '</h2>');
@@ -439,27 +455,18 @@ function getListTransactionDisplayResult(tx, results){
 					isNewDay = true;
 				}else{
 					isNewDay = false;
-				}
+				}*/
 			}
+			
+			// update
+//			$('#ulListTransaction').listview('refresh');
 		}
-	/*	
-		$("#listTransactionmainView").append("<div data-role='collapsible-set' data-inset='false'>");
-		$("#listTransactionmainView").append('<div data-role="collapsible">\
-					<h2>Mailbox</h2>\
-					<ul data-role="listview">\
-						<li><a href="#">Inbox <span class="ui-li-count">12</span></a></li>\
-						<li><a href="#">Outbox <span class="ui-li-count">0</span></a></li>\
-						<li><a href="#">Drafts <span class="ui-li-count">4</span></a></li>\
-						<li><a href="#">Sent <span class="ui-li-count">328</span></a></li>\
-						<li><a href="#">Trash <span class="ui-li-count">62</span></a></li>\
-					</ul>\
-				</div>');
-		$("#listTransactionmainView").append("</div>");*/
-		
 	}else{
 		//return "Tài khoản của tôi";
 		$("#listTransactionmainView").append("<p>"+"Không có chi tiêu nào trong tháng này :("+"</p>");
 	}
+	
+	
 }
 
 function getListTransaction(){	
