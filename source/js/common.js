@@ -2,17 +2,30 @@
 
 // Global variables
 var currentMonth = 0;
-var currentYear = 0;
-var previousMonth = 0;
-var nextMonth = 0;
+var currentMonthDebt = 0;
 
-// Set current month
+var previousMonth = 0;
+var previousMonthDebt = 0;
+
+var nextMonth = 0;
+var nextMonthDebt = 0;
+
+var currentYear = 0;
+var currentYearDebt = 0;
+
+// Initialization for current month
 var date = new Date();
 currentMonth = date.getMonth();	
+currentMonthDebt = currentMonth;
+
 previousMonth = (currentMonth + 12 - 1)%12;
+previousMonthDebt = (currentMonthDebt + 12 - 1)%12;
+
 nextMonth = (currentMonth + 1)%12;
-//currentMonth = 11 ;	
-currentYear = date.getYear();
+nextMonthDebt = (currentMonthDebt + 1)%12;
+
+currentYear = date.getFullYear();
+currentYearDebt = date.getFullYear();
 
 function onReadyTransaction( ){
 	console.log( 'Transaction completed' )
@@ -333,7 +346,7 @@ function getDb(){
 }
 
 function resetFields(){
-	document.getElementById('category').value = "" ;
+	//document.getElementById('category').value = "" ;
 	document.getElementById('amount').value = "";
 	document.getElementById('txtNote').value = "";
 	document.getElementById('dateTrans').value = "";
@@ -344,6 +357,10 @@ function onCreateTransactionSuccess(){
 	
 	// Rebuild list transaction
 	getListTransaction();
+	
+	// Update date list transaction
+	getListTransaction();
+	
 	window.location.href = '#addTransactionSuccess';
 }
 
@@ -385,93 +402,133 @@ function onCreateTransaction(){
 	}
 }
 
-function updateMonthDisplay(){
+function updateMonthDisplayForSpentIncome(){
 	previousMonth = (currentMonth + 12 - 1)%12;
 	nextMonth = (currentMonth + 1)%12;
 	
-	var cur= currentMonth + 1;
-	var pre= previousMonth + 1;
-	var next= nextMonth + 1;
+	// Update listransaction
+	getListTransaction();
+}
+
+function updateMonthDisplayForDebt(){
+	previousMonthDebt = (currentMonthDebt + 12 - 1)%12;
+	nextMonthDebt = (currentMonthDebt + 1)%12;
 	
-	$("#currentMonth").text("Tháng " + cur);
-	$("#previousMonth").text("Tháng " + pre);
-	$("#nextMonth").text("Tháng " + next);
+	// Update listransaction
+	getListDebt();
+}
+
+// For transaction
+
+
+function showTransactionDetailResult(tx, results){
+	if( results.rows.length > 0){
+		// Get data from result query 
+		var row = results.rows.item(0);
+		
+		var da = new Date(row['TransactionDate']);
+		
+		var fulldate = "Ngày giao dịch: " + da.getDate()+ '/' + (da.getMonth()+1) + '/' + da.getFullYear();
+		var description  = "Mô tả chi tiết: " + row['Description'];
+		var amount = "Số tiền: " + row['Amount'];
+		
+		// Set Information in dialog page
+		$('#dateTransaction').text(fulldate);
+		$('#descriptionTransaction').text(description);
+		$('#amoutTransaction').text(amount);
+
+						
+		window.location.href = '#showInformationTransactionPage';
+	}else{
+		// ID not valid 
+		// Do notthing
+	}
+}
+
+function showTransactionDetail(id){
+	db = getDb();
+	
+	db.transaction(
+					function(tx){				
+						tx.executeSql(
+						"SELECT Transactions.Description, Transactions.Amount, Transactions.TransactionDate\
+						FROM Transactions WHERE TransactionID=?",
+						[id],
+						showTransactionDetailResult,
+						onErrorCommon
+					)
+				},
+				onErrorCommon,
+				onReadyTransaction
+			);
+	
 }
 
 function getListTransactionDisplayResult(tx, results){
-	$("#listTransactionmainView").empty();
-	updateMonthDisplay();
+	$("#listTransactionDisplay").text("Tháng " + (currentMonth + 1) + "-" + currentYear);
+	
+	// Initialization 
+	$("#ulListTransaction").empty();
+	$('#listTransactionmainContent').empty();
+	
+	isExist = false;
 	
 	if(results.rows.length > 0){
-		//return "Exists";
-		// Get month now
-		
+
 		var len = results.rows.length;
 		var month = 0;
 		var cnt = 0;
 		var isNewDay = true;
-		var currentDate = 0;
 		var subDescription = "";
+		var isFirst = true;
 		
 		for( cnt = 0; cnt < len; cnt++){
 			var row = results.rows.item(cnt);
 			var da = new Date(row["TransactionDate"]);
 			
 			if(row['Description'].length >= 20){
-				subDescription = row['Description'].substring(0, 20) + "...";
+				subDescription = row['Description'].substring(0, 20) + "..." + '-' + da.getDate()+ '/' + (da.getMonth()+1) + '/' + da.getFullYear();
 			}else{
-				subDescription = row['Description'];
+				subDescription = row['Description'] + '-' + da.getDate()+ '/' + (da.getMonth()+1) + '/' + da.getFullYear();;
 			}
-			
-			// Get current day
-			currentDate = da.getDate();
-			
-			$listID = 'date'+currentDate;
-			
-			
+
 			// Get date and month
-			if( da.getMonth() == currentMonth){
-				//alert('1');
-			$("#ulListTransaction").append("<li><a href='#'>" + subDescription + "</a></li>");		
-		//	alert('2');	
-				alert('1');
-			$("#ulListTransaction").append("<li><a href='#'>" + subDescription + "</a></li>");		
-			alert('2');	
-		/*		if(isNewDay){
-					$("#listTransactionmainView").append("<div data-role='collapsible' data-collapsed-icon='arrow-r' data-expanded-icon='arrow-d' data-inset='false'>");
-					$("#listTransactionmainView").append('<div data-role="collapsible">');
-					$("#listTransactionmainView").append('<h2>' + row['CategoryName'] + '</h2>');
-					$("#listTransactionmainView").append('<ul data-role="listview">');
+			if( da.getMonth() == currentMonth && date.getFullYear() == currentYear){
+				if(isFirst == true){
+					$('#listTransactionmainContent').append('<ul data-role="listview" data-inset="true" id="ulListTransaction"></ul>');
+					$('#ulListTransaction').listview();
+					isFirst = false;
 				}
 				
-				// print list view 
-				$("#listTransactionmainView").append("<li><a href='#'>" + subDescription + "</a></li>");
+				$("#ulListTransaction").append("<li id=" + row['TransactionID'] + "><a href='#'>" + subDescription
+				+ "</a><span class='ui-li-count ui-btn-up-c ui-btn-corner-all'>" + row['Amount'] + "</span></li>");		
 				
-				var rw = results.rows.item((cnt+1));
-				var newDate = new Date(rw["TransactionDate"]);
-				var nextDate = newDate.getDate();
-				
-				if(currentDate != nextDate){
-					$("#listTransactionmainView").append("</ul>");
-					//$("#listTransactionmainView").append("</div>");
-					$("#listTransactionmainView").append("</div>");
-					isNewDay = true;
-				}else{
-					isNewDay = false;
-				}*/
+				// There is an item or more in list
+				isExist = true;		
 			}
-			
-			// update
-//			$('#ulListTransaction').listview('refresh');
-			$('#ulListTransaction').listview('refresh');
-			alert('3');
 		}
 	}else{
 		//return "Tài khoản của tôi";
-		$("#listTransactionmainView").append("<p>"+"Không có chi tiêu nào trong tháng này :("+"</p>");
+		// DO nothing
 	}
 	
-	
+	if (!isExist){
+		$('#ulListTransaction').empty();
+		$("#listTransactionmainContent").append("<p>"+"Không có chi tiêu nào trong tháng này :("+"</p>");
+		
+	}else{
+		
+		// Bind event
+		$("#ulListTransaction li").on("click", function (event) {
+			//alert($(this).attr('id'));
+			//window.location.href = '#showInformationTransactionPage';
+			var id = $(this).attr('id');
+			
+			showTransactionDetail(id);
+		});	
+		
+		$('#ulListTransaction').listview('refresh');
+	}
 }
 
 function getListTransaction(){	
@@ -480,8 +537,8 @@ function getListTransaction(){
 	db.transaction(
 					function(tx){				
 						tx.executeSql(
-						"SELECT Category.CategoryName, Category.CategoryType, Category.CategoryTypeSpecify, Transactions.Description, Transactions.Amount, Transactions.TransactionDate\
-						FROM Category INNER JOIN Transactions on Category.CategoryID=Transactions.CategoryID GROUP BY  Category.CategoryName, Category.CategoryType, Category.CategoryTypeSpecify,\
+						"SELECT Category.CategoryName, Category.CategoryType, Category.CategoryTypeSpecify, Transactions.TransactionID, Transactions.Description, Transactions.Amount, Transactions.TransactionDate\
+						FROM Category INNER JOIN Transactions on Category.CategoryID=Transactions.CategoryID WHERE Category.CategoryTypeSpecify = 1 GROUP BY  Category.CategoryName, Category.CategoryType, Category.CategoryTypeSpecify,\
   					    Transactions.Description, Transactions.Amount, Transactions.TransactionDate ORDER BY Transactions.TransactionDate ASC",
 						[],
 						getListTransactionDisplayResult,
@@ -493,18 +550,179 @@ function getListTransaction(){
 			);	
 }
 
-function onPreviousMonth(){
-	// Set current month
-	currentMonth = previousMonth;
-	updateMonthDisplay();
+// For debt
+
+function showDebtDetailResult(tx, results){
+	if( results.rows.length > 0){
+		// Get data from result query 
+		var row = results.rows.item(0);
+		
+		var da = new Date(row['TransactionDate']);
+		
+		var fulldate = "Ngày giao dịch: " + da.getDate()+ '/' + (da.getMonth()+1) + '/' + da.getFullYear();
+		var description  = "Mô tả chi tiết: " + row['Description'];
+		var amount = "Số tiền: " + row['Amount'];
+		
+		// Set Information in dialog page
+		$('#dateDebt').text(fulldate);
+		$('#descriptionDebt').text(description);
+		$('#amoutDebt').text(amount);
+		
+		window.location.href = '#showInformationDebtPage';
+	}else{
+		// ID not valid 
+		// Do notthing
+	}
 }
 
-function onCurrentMonth(){
+function showDebtDetail(id){
+	db = getDb();
+	
+	db.transaction(
+					function(tx){				
+						tx.executeSql(
+						"SELECT Transactions.Description, Transactions.Amount, Transactions.TransactionDate\
+						FROM Transactions WHERE TransactionID=?",
+						[id],
+						showDebtDetailResult,
+						onErrorCommon
+					)
+				},
+				onErrorCommon,
+				onReadyTransaction
+			);
 	
 }
 
+function getListDebtDisplayResult(tx, results){
+	$("#listDebtsDisplay").text("Tháng " + (currentMonthDebt + 1) + "-" + currentYearDebt);
+	
+	// Initialization 
+	$("#ulListDebt").empty();
+	$('#listDebtsmainContent').empty();
+	//$('#ulListTransaction').listview();
+	
+	isExist = false;
+	
+	if(results.rows.length > 0){
+		var len = results.rows.length;
+		var month = 0;
+		var cnt = 0;
+		var isNewDay = true;
+		var subDescription = "";
+		var isFirst = true;
+		
+		for( cnt = 0; cnt < len; cnt++){
+			var row = results.rows.item(cnt);
+			var da = new Date(row["TransactionDate"]);
+			
+			if(row['Description'].length >= 20){
+				subDescription = row['Description'].substring(0, 20) + "..." + '-' + da.getDate()+ '/' + (da.getMonth()+1) + '/' + da.getFullYear();
+			}else{
+				subDescription = row['Description'] + '-' + da.getDate()+ '/' + (da.getMonth()+1) + '/' + da.getFullYear();;
+			}
+			
+			// Get date and month
+			if( da.getMonth() == currentMonthDebt && date.getFullYear() == currentYearDebt){
+				if(isFirst == true){
+					$('#listDebtsmainContent').append('<ul data-role="listview" data-inset="true" id="ulListDebt"></ul>');
+					$('#ulListDebt').listview();
+					isFirst = false;
+				}
+				
+				$("#ulListDebt").append("<li id=" + row['TransactionID'] + "><a href='#'>" + subDescription
+				+ "</a><span class='ui-li-count ui-btn-up-c ui-btn-corner-all'>" + row['Amount'] + "</span></li>");	
+				
+				// There is an item or more in list
+				isExist = true;		
+			}
+		}
+	}else{
+		//return "Tài khoản của tôi";
+		// DO nothing
+	}
+	
+	if (!isExist){
+		$('#ulListDebt').empty();
+		$("#listDebtsmainContent").append("<p>"+"Không có vay/nợ nào trong tháng này :("+"</p>");
+		
+	}else{
+		// Bind event
+		$("#ulListDebt li").on("click", function (event) {
+			//alert($(this).attr('id'));
+			// get data from db
+			//1. Get id
+			var id = $(this).attr('id');
+			
+			showDebtDetail(id);
+		//	window.location.href = '#showInformationDebtPage';
+		});	
+
+		$('#ulListDebt').listview('refresh');
+	}
+	
+}
+
+function getListDebt(){	
+	db = getDb();
+	
+	db.transaction(
+					function(tx){				
+						tx.executeSql(
+						"SELECT Category.CategoryName, Category.CategoryType, Category.CategoryTypeSpecify, Transactions.TransactionID, Transactions.Description, Transactions.Amount, Transactions.TransactionDate\
+						FROM Category INNER JOIN Transactions on Category.CategoryID=Transactions.CategoryID WHERE Category.CategoryTypeSpecify = 0 GROUP BY  Category.CategoryName, Category.CategoryType, Category.CategoryTypeSpecify,\
+  					    Transactions.Description, Transactions.Amount, Transactions.TransactionDate ORDER BY Transactions.TransactionDate ASC",
+						[],
+						getListDebtDisplayResult,
+						onErrorCommon
+					)
+				},
+				onErrorCommon,
+				onReadyTransaction
+			);	
+}
+
+function onPreviousMonth(){
+	// Update current year
+	if( currentMonth == 0){
+		currentYear = currentYear - 1;
+	}
+	// Set current month
+	currentMonth = previousMonth;
+	
+	updateMonthDisplayForSpentIncome();
+}
+
 function onNextMonth(){
+	// Update current year
+	if( currentMonth == 11){
+		currentYear = currentYear + 1;
+	}
 	// Set current month
 	currentMonth = nextMonth;
-	updateMonthDisplay();
+	
+	updateMonthDisplayForSpentIncome();
+}
+
+// For debt
+function onPreviousMonthDebt(){
+	// Update current year
+	if( currentMonthDebt == 0){
+		currentYearDebt = currentYearDebt - 1;
+	}
+	// Set current month
+	currentMonthDebt = previousMonthDebt;
+	
+	updateMonthDisplayForDebt();
+}
+
+function onNextMonthDebt(){
+	// Update current year
+	if( currentMonthDebt == 11){
+		currentYearDebt = currentYearDebt + 1;
+	}
+	// Set current month
+	currentMonthDebt = nextMonthDebt;
+	
+	updateMonthDisplayForDebt();
 }
