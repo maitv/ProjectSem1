@@ -19,7 +19,7 @@
         <div data-role="content">            
         	<form>
                <input type='text' id='txtAccountDisplay' name='txtAccountDisplay' placeholder='Nhập vào tên tài khoản' value='' />
-               <input type='number' id='txtAccountBalance' name='txtAccountBalance' placeholder='Nhập vào số tiền của tài khoản' />
+               <input type='text' id='txtAccountBalance' name='txtAccountBalance' placeholder='Nhập vào số tiền của tài khoản' onKeyUp="AutoFormatDigit(this)"/>
                <input type="text" class="date-input" data-role="date" data-inline="false" id="dateTrans" placeholder='Ngày bắt đầu'>
         </div>
         <div data-role="footer" data-id="persistfooter" data-position="fixed" >
@@ -84,7 +84,10 @@
 		
 		accountDisplay = document.getElementById('txtAccountDisplay').value ;
 		accountDisplay = accountDisplay.trim();
-		accountBalance = parseInt(document.getElementById('txtAccountBalance').value);
+		
+		// remove comma
+		amountTmp = document.getElementById('txtAccountBalance').value.toString().replace(/\$|\./g,'');
+		accountBalance = parseInt(amountTmp);
 		dateTrans = document.getElementById('dateTrans').value;
 		
 		db.transaction(

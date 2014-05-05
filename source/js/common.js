@@ -387,7 +387,9 @@ function onCreateTransaction(){
 		var note = "";
 		
 		categoryID = parseInt(document.getElementById('category').value) ;
-		amount = parseInt(document.getElementById('amount').value);
+		amountTmp = document.getElementById('amount').value.toString().replace(/\$|\./g,'');
+		//amount = parseInt(document.getElementById('amount').value);
+		amount = parseInt(amountTmp);
 		note = document.getElementById('txtNote').value;
 		dateTrans = document.getElementById('dateTrans').value;
 		
@@ -526,7 +528,7 @@ function getListTransactionDisplayResult(tx, results){
 				}
 				
 				$("#ulListTransaction").append("<li id=" + row['TransactionID'] + "><a href='#'>" + subDescription
-				+ "</a><span class='ui-li-count ui-btn-up-c ui-btn-corner-all'>" + row['Amount'] + "</span></li>");		
+				+ "</a><span class='ui-li-count ui-btn-up-c ui-btn-corner-all'>" + formatCurrency(row['Amount']) + " VND</span></li>");		
 				
 				// There is an item or more in list
 				isExist = true;		
@@ -657,7 +659,7 @@ function getListDebtDisplayResult(tx, results){
 				}
 				
 				$("#ulListDebt").append("<li id=" + row['TransactionID'] + "><a href='#'>" + subDescription
-				+ "</a><span class='ui-li-count ui-btn-up-c ui-btn-corner-all'>" + row['Amount'] + "</span></li>");	
+				+ "</a><span class='ui-li-count ui-btn-up-c ui-btn-corner-all'>" + formatCurrency(row['Amount']) + " VND</span></li>");	
 				
 				// There is an item or more in list
 				isExist = true;		
@@ -887,9 +889,9 @@ function getStatictisDisplayResult(tx, results){
 	}
 	
 	// update statistic
-	$('#totalIncome').text(totalIncome);
-	$('#totalOutcome').text(totalOutcome);
-	$('#balance').text(balance);
+	$('#totalIncome').text(formatCurrency(totalIncome) + "VND");
+	$('#totalOutcome').text(formatCurrency(totalOutcome) + "VND");
+	$('#balance').text(formatCurrency(balance) + "VND");
 }
 
 function getStatictis(){
@@ -908,4 +910,26 @@ function getStatictis(){
 		onErrorCommon,
 		onReadyTransaction
 	);	
+}
+
+function formatCurrency(num) {
+	num = num.toString().replace(/\$|\./g,'');
+	if(isNaN(num)){
+		num = "0";
+	}else{
+		if( num < 1000){
+			num = num;
+		}else{
+			
+			for (var i = 0; i < Math.floor((num.length-(1+i))/3); i++)
+			num = num.substring(0,num.length-(4*i+3)) + '.' + num.substring(num.length-(4*i+3));
+		}
+	}
+	
+	return num ;
+}
+
+function AutoFormatDigit(obj) {
+	var num = formatCurrency($(obj).val());
+	$(obj).val(num);
 }
