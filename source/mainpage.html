@@ -11,6 +11,7 @@
 <script src="js/jquery-ui.js"></script>
 <script src="js/common.js"></script>
 <script src="js/jquery-ui.js"></script>
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
 <link rel="stylesheet" href="css/mainpage.css" >
 <link rel="stylesheet" href="css/jquery-ui.css">
 
@@ -37,7 +38,7 @@
                 	<!--h1>Sổ nợ</h1-->
                 </div>
                 <div id="trendsIcon">
-	                <a href="#trends"><img src="images/statistic_150_150.png" alt="Thống kê" onClick="resetFields()"/></a>
+	                <a href="#trends"><img src="images/statistic_150_150.png" alt="Thống kê" onClick="onTrends()"/></a>
                 	<!--h1>Thống kê</h1-->
                 </div>
             </div>
@@ -185,9 +186,12 @@
 	        <h1 id="accountDisplay">Thống kê</h1>
     	</div>
         <div data-role="content" id="trendsmainContent">
-            <!--h3>This is main page</h3-->
-            <div id="trendsmainView">
+        	<div id="statistic">
+            	<p id="totalIncome"></p>
+                <p id="totalOutcome"></p>
+                <p id="balance"></p>
             </div>
+            <div id="piechart" style="width: 700px; height: 300px;"></div>
         </div>
         <div data-role="footer" data-id="persistfooter" 
         data-position="fixed" >
