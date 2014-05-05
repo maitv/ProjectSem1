@@ -2,27 +2,25 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
-<link rel="stylesheet" href="js/jquery.mobile-1.4.2/jquery.mobile-1.4.2.min.css">
-<script src="js/jquery-1.11.0.min.js"></script>
-<script src="js/jquery.mobile-1.4.2/jquery.mobile-1.4.2.min.js"></script>
-<script src="js/jquery-1.11.0.min.js"></script>
 <script src="js/common.js"></script>
-
-<link rel="stylesheet" href="css/jquery-ui.css">
-<script src="js/jquery-1.10.2.js"></script>
-<script src="js/jquery-ui.js"></script>
+<!-- update for datepicker -->
+<link rel="stylesheet"  href="js/jquery.mobile-1.4.2/jquery.mobile-1.4.2.css" /> 
+<link rel="stylesheet" href="css/jquery.mobile.datepicker.css" />
+<script src="js/jquery-1.10.2.js"></script> 
+<script src="js/jquery.ui.datepicker.js"></script>
+<script src="js/jquery.mobile-1.4.2/jquery.mobile-1.4.2.js"></script> 
+<script src="js/jquery.mobile.datepicker.js"></script>
 </head>
 <body>
     <div id="movies" data-role="page" >
-        <div data-role="header" data-id="persistheader" 
-        data-position="fixed">
+        <div data-role="header" data-id="persistheader" data-position="fixed">
 	        <h1>Tạo tài khoản</h1>
     	</div>
         <div data-role="content">            
-            <form action="#" method='post'>
+        	<form>
                <input type='text' id='txtAccountDisplay' name='txtAccountDisplay' placeholder='Nhập vào tên tài khoản' value='' />
                <input type='number' id='txtAccountBalance' name='txtAccountBalance' placeholder='Nhập vào số tiền của tài khoản' />
-               <input type="text" data-role="date" id="dateTrans" placeholder='Ngày bắt đầu'>
+               <input type="text" class="date-input" data-role="date" data-inline="false" id="dateTrans" placeholder='Ngày bắt đầu'>
         </div>
         <div data-role="footer" data-id="persistfooter" data-position="fixed" >
             <div data-role="navbar">
@@ -31,16 +29,16 @@
                     <li><input type="reset" value="Hủy bỏ" onClick="onReset()"></li-->
                     <li><a href="#" data-role="button" data-icon="check" onClick="onCreateAccount()">Tạo tài khoản</a></li>
                     <li><a href="#" data-role="button" data-icon="delete" onClick="onReset()">Hủy bỏ</a></li>
+           </form>
                 </ul>
             </div>
-            </form>
         </div>
 	</div>
 </body>
 </html>
 <script>
 	$(document).ready(function(){
-		$("#dateTrans").datepicker();
+		//$("#dateTrans").datepicker();
 	});	
 	
 	// Open db
@@ -50,15 +48,6 @@
 		// Check DB was created
 		alert('Your DB was not created this time');
 	}
-	/*
-	function onReadyTransaction( ){
-		console.log( 'Transaction completed' )
-	}
-	
-	function onSuccessExecuteSql( tx, results ){
-		console.log( 'Execute SQL completed' )
-	}
-	*/
 	
 	function onReset(){
 		// reset all data in form

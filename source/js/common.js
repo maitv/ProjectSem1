@@ -3,29 +3,39 @@
 // Global variables
 var currentMonth = 0;
 var currentMonthDebt = 0;
+var currentMonthTrend = 0;
 
 var previousMonth = 0;
 var previousMonthDebt = 0;
+var previousMonthTrend = 0;
 
 var nextMonth = 0;
 var nextMonthDebt = 0;
+var nextMonthTrend = 0;
 
 var currentYear = 0;
 var currentYearDebt = 0;
+var currentYearTrend = 0;
 
 // Initialization for current month
 var date = new Date();
 currentMonth = date.getMonth();	
 currentMonthDebt = currentMonth;
+currentMonthTrend = currentMonth;
 
 previousMonth = (currentMonth + 12 - 1)%12;
 previousMonthDebt = (currentMonthDebt + 12 - 1)%12;
+previousMonthTrend = (currentMonthTrend + 12 - 1)%12;
 
 nextMonth = (currentMonth + 1)%12;
 nextMonthDebt = (currentMonthDebt + 1)%12;
+nextMonthTrend = (currentMonthTrend + 1)%12;
 
 currentYear = date.getFullYear();
 currentYearDebt = date.getFullYear();
+currentYearTrend = date.getFullYear();
+
+var categoryColorArray = ['#99CDFB','#3366FB','#0000FA','#F8CC00','#F89900','#F76600', '#B20EF7', '#F77B0E', '#02C627'];
 
 function onReadyTransaction( ){
 	console.log( 'Transaction completed' )
@@ -359,7 +369,10 @@ function onCreateTransactionSuccess(){
 	getListTransaction();
 	
 	// Update date list transaction
-	getListTransaction();
+	getListDebt();
+	
+	// Update trend
+	updateMonthDisplayForTrend();
 	
 	window.location.href = '#addTransactionSuccess';
 }
@@ -418,6 +431,16 @@ function updateMonthDisplayForDebt(){
 	getListDebt();
 }
 
+function updateMonthDisplayForTrend(){
+	previousMonthTrend = (currentMonthTrend + 12 - 1)%12;
+	nextMonthTrend = (currentMonthTrend + 1)%12;
+	
+	// Update listransaction
+	getStatictis();
+	
+	drawPieChart();
+}
+
 // For transaction
 
 
@@ -465,17 +488,19 @@ function showTransactionDetail(id){
 }
 
 function getListTransactionDisplayResult(tx, results){
-	$("#listTransactionDisplay").text("Tháng " + (currentMonth + 1) + "-" + currentYear);
+	//$("#listTransactionDisplay").text("Tháng " + (currentMonth + 1) + "-" + currentYear);
 	
 	// Initialization 
 	$("#ulListTransaction").empty();
 	$('#listTransactionmainContent').empty();
 	
-	isExist = false;
+	// build current time
+	$('#listTransactionmainContent').append("<div><h3 id='currentTimeTransaction' style='text-align:center'> Tháng " + (currentMonth + 1) + " - " + currentYear + "</h3></div>");
 	
-	if(results.rows.length > 0){
-
-		var len = results.rows.length;
+	
+	isExist = false;
+	var len = results.rows.length;
+	if(len > 0){
 		var month = 0;
 		var cnt = 0;
 		var isNewDay = true;
@@ -535,19 +560,18 @@ function getListTransaction(){
 	db = getDb();
 	
 	db.transaction(
-					function(tx){				
-						tx.executeSql(
-						"SELECT Category.CategoryName, Category.CategoryType, Category.CategoryTypeSpecify, Transactions.TransactionID, Transactions.Description, Transactions.Amount, Transactions.TransactionDate\
-						FROM Category INNER JOIN Transactions on Category.CategoryID=Transactions.CategoryID WHERE Category.CategoryTypeSpecify = 1 GROUP BY  Category.CategoryName, Category.CategoryType, Category.CategoryTypeSpecify,\
-  					    Transactions.Description, Transactions.Amount, Transactions.TransactionDate ORDER BY Transactions.TransactionDate ASC",
-						[],
-						getListTransactionDisplayResult,
-						onErrorCommon
-					)
-				},
-				onErrorCommon,
-				onReadyTransaction
-			);	
+			function(tx){				
+				tx.executeSql(
+				"SELECT Category.CategoryName, Category.CategoryType, Category.CategoryTypeSpecify, Transactions.TransactionID, Transactions.Description, Transactions.Amount, Transactions.TransactionDate\
+				FROM Category INNER JOIN Transactions on Category.CategoryID=Transactions.CategoryID WHERE Category.CategoryTypeSpecify = 1 ORDER BY Transactions.TransactionDate ASC",
+				[],
+				getListTransactionDisplayResult,
+				onErrorCommon
+			)
+		},
+		onErrorCommon,
+		onReadyTransaction
+	);	
 }
 
 // For debt
@@ -595,17 +619,19 @@ function showDebtDetail(id){
 }
 
 function getListDebtDisplayResult(tx, results){
-	$("#listDebtsDisplay").text("Tháng " + (currentMonthDebt + 1) + "-" + currentYearDebt);
+	//$("#listDebtsDisplay").text("Tháng " + (currentMonthDebt + 1) + "-" + currentYearDebt);
 	
 	// Initialization 
 	$("#ulListDebt").empty();
 	$('#listDebtsmainContent').empty();
 	//$('#ulListTransaction').listview();
+	// build current time
+	$('#listDebtsmainContent').append("<div><h3 id='currentTimeDebts' style='text-align:center'> Tháng " + (currentMonthDebt + 1) + " - " + currentYearDebt + "</h3></div>");
 	
 	isExist = false;
+	var len = results.rows.length;
 	
-	if(results.rows.length > 0){
-		var len = results.rows.length;
+	if(len > 0){
 		var month = 0;
 		var cnt = 0;
 		var isNewDay = true;
@@ -667,19 +693,18 @@ function getListDebt(){
 	db = getDb();
 	
 	db.transaction(
-					function(tx){				
-						tx.executeSql(
-						"SELECT Category.CategoryName, Category.CategoryType, Category.CategoryTypeSpecify, Transactions.TransactionID, Transactions.Description, Transactions.Amount, Transactions.TransactionDate\
-						FROM Category INNER JOIN Transactions on Category.CategoryID=Transactions.CategoryID WHERE Category.CategoryTypeSpecify = 0 GROUP BY  Category.CategoryName, Category.CategoryType, Category.CategoryTypeSpecify,\
-  					    Transactions.Description, Transactions.Amount, Transactions.TransactionDate ORDER BY Transactions.TransactionDate ASC",
-						[],
-						getListDebtDisplayResult,
-						onErrorCommon
-					)
-				},
-				onErrorCommon,
-				onReadyTransaction
-			);	
+			function(tx){				
+				tx.executeSql(
+				"SELECT Category.CategoryName, Category.CategoryType, Category.CategoryTypeSpecify, Transactions.TransactionID, Transactions.Description, Transactions.Amount, Transactions.TransactionDate\
+				FROM Category INNER JOIN Transactions on Category.CategoryID=Transactions.CategoryID WHERE Category.CategoryTypeSpecify = 0 ORDER BY Transactions.TransactionDate ASC",
+				[],
+				getListDebtDisplayResult,
+				onErrorCommon
+			)
+		},
+		onErrorCommon,
+		onReadyTransaction
+	);	
 }
 
 function onPreviousMonth(){
@@ -727,30 +752,160 @@ function onNextMonthDebt(){
 	updateMonthDisplayForDebt();
 }
 
-function drawPieChart(){
-	google.load("visualization", "1", {packages:["corechart"]});
-      google.setOnLoadCallback(drawChart);
-      function drawChart() {
-        var data = google.visualization.arrayToDataTable([
-          ['Task', 'Hours per Day'],
-          ['Work',     11],
-          ['Eat',      2],
-          ['Commute',  2],
-          ['Watch TV', 2],
-          ['Sleep',    7]
-        ]);
-
-        var options = {
-          title: 'My Daily Activities'
-        };
-
-        var chart = new google.visualization.PieChart(document.getElementById('piechart'));
-        chart.draw(data, options);
-      }
-
+// For Trend
+function onPreviousMonthTrend(){
+	// Update current year
+	if( currentMonthTrend == 0){
+		currentYearTrend = currentYearTrend - 1;
+	}
+	// Set current month
+	currentMonthTrend = previousMonthTrend;
+	
+	updateMonthDisplayForTrend();
 }
 
-function onTrends(){
-	resetFields();
-	drawPieChart();	
+function onNextMonthTrend(){
+	// Update current year
+	if( currentMonthTrend == 11){
+		currentYearTrend = currentYearTrend + 1;
+	}
+	// Set current month
+	currentMonthTrend = nextMonthTrend;
+	
+	updateMonthDisplayForTrend();
+}
+
+function drawPieChartDisplayResult(tx, results){
+	var len = results.rows.length;
+	var totalIncome  = 0;
+	var totalOutcome = 0;
+	var balance = 0;
+	
+	var myChart = new JSChart('graph', 'pie');
+	var arrayCnt = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'];
+	var isExits = false;
+	
+	if( len > 0){
+		var arrayColor = new Array();
+		var myData = new Array();
+		var counter = 0;
+		
+		for( cnt = 0; cnt < len; cnt++){
+			var row = results.rows.item(cnt);
+			var da = new Date(row["TransactionDate"]);
+			
+			// Get date and month
+			if( da.getMonth() == currentMonthTrend && date.getFullYear() == currentYearTrend){		
+				isExits = true;
+				//myChart.colorize(['#99CDFB','#3366FB','#0000FA','#F8CC00','#F89900','#F76600']);
+				arrayColor[counter] = categoryColorArray[counter];
+				myChart.setLegend(categoryColorArray[counter], row['CategoryName']);
+				myData[counter] = [arrayCnt[counter], row['total']];
+				counter += 1;
+			}
+		}
+		
+		if(isExits){
+			// draw pie chart
+			myChart.setDataArray(myData);
+			myChart.colorize(arrayColor);
+			myChart.setSize(500, 300);
+			myChart.setTitle('Biểu đồ thống kê chi tiêu');
+			myChart.setTitleFontFamily('Times New Roman');
+			myChart.setTitleFontSize(14);
+			myChart.setTitleColor('#0F0F0F');
+			myChart.setPieRadius(100);
+			myChart.setPieValuesColor('#FFFFFF');
+			myChart.setPieValuesFontSize(9);
+			myChart.setPiePosition(130, 150);
+			myChart.setShowXValues(false);
+			/*myChart.setLegend('#99CDFB', 'Papers where authors found');
+			myChart.setLegend('#3366FB', 'Papers which cite from other articles');
+			myChart.setLegend('#0000FA', 'Papers which cite from news');
+			myChart.setLegend('#F8CC00', 'Papers which lack crucial');
+			myChart.setLegend('#F89900', 'Papers with different conclusion');
+			myChart.setLegend('#F76600', 'Papers with useful information');*/
+			myChart.setLegendShow(true);
+			myChart.setLegendFontFamily('Times New Roman');
+			myChart.setLegendFontSize(15);
+			myChart.setLegendPosition(280, 120);
+			myChart.setPieAngle(0);
+			myChart.set3D(true);
+			myChart.draw();
+		}
+	}else{
+		
+	}
+}
+
+function drawPieChart(){
+	db = getDb();
+	
+	db.transaction(
+			function(tx){				
+				tx.executeSql(
+				"SELECT Category.CategoryID, Category.CategoryName, Transactions.TransactionID, Transactions.Description, Transactions.TransactionDate, SUM(Transactions.Amount) AS total\
+				FROM Category INNER JOIN Transactions on Category.CategoryID=Transactions.CategoryID WHERE Category.CategoryType = 1 GROUP BY Category.CategoryID ORDER BY Transactions.TransactionDate ASC",
+				[],
+				drawPieChartDisplayResult,
+				onErrorCommon
+			)
+		},
+		onErrorCommon,
+		onReadyTransaction
+	);
+}
+
+function getStatictisDisplayResult(tx, results){
+	// Update current month
+	$('#currentTimeTrend').text('Tháng ' + (currentMonthTrend + 1) + " - " + currentYearTrend);
+	
+	var totalIncome = 0;
+	var totalOutcome = 0;
+	var balance = 0;
+	var len = results.rows.length;
+	
+	if( len > 0){
+		for( cnt = 0; cnt < len; cnt++){
+			var row = results.rows.item(cnt);
+			var da = new Date(row["TransactionDate"]);
+			
+			// Get date and month
+			if( da.getMonth() == currentMonthTrend && date.getFullYear() == currentYearTrend){
+				// Check income or outcome
+				if( row['CategoryType'] == 0){
+					totalIncome += row['Amount'];	
+				}else{
+					totalOutcome += row['Amount'];
+				}
+			}
+		}
+		
+		balance = totalIncome - totalOutcome;
+	}else{
+		
+	}
+	
+	// update statistic
+	$('#totalIncome').text(totalIncome);
+	$('#totalOutcome').text(totalOutcome);
+	$('#balance').text(balance);
+}
+
+function getStatictis(){
+	db = getDb();
+	
+	db.transaction(
+			function(tx){				
+				tx.executeSql(
+				"SELECT Category.CategoryName, Category.CategoryType, Category.CategoryTypeSpecify, Transactions.TransactionID, Transactions.Description, Transactions.Amount, Transactions.TransactionDate\
+				FROM Category INNER JOIN Transactions on Category.CategoryID=Transactions.CategoryID ORDER BY Transactions.TransactionDate ASC",
+				[],
+				getStatictisDisplayResult,
+				onErrorCommon
+			)
+		},
+		onErrorCommon,
+		onReadyTransaction
+	);	
 }

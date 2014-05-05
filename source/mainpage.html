@@ -2,18 +2,22 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
-<link rel="stylesheet" href="js/jquery.mobile-1.4.2/jquery.mobile-1.4.2.min.css">
-<!--link rel="stylesheet" href="js/jquery.mobile-1.1.0/jquery.mobile-1.1.0.css"-->
+<!--link rel="stylesheet" href="js/jquery.mobile-1.4.2/jquery.mobile-1.4.2.min.css"-->
 <script src="js/jquery-1.7.2.min.js"></script>
-<!--script src="js/jquery.mobile-1.1.0/jquery.mobile-1.1.0.min.js"></script-->
-  <!--script src="js/jquery-1.11.0.min.js"></script-->
-<script src="js/jquery.mobile-1.4.2/jquery.mobile-1.4.2.min.js"></script>
-<script src="js/jquery-ui.js"></script>
+<!--script src="js/jquery.mobile-1.4.2/jquery.mobile-1.4.2.min.js"></script-->
 <script src="js/common.js"></script>
-<script src="js/jquery-ui.js"></script>
-<script type="text/javascript" src="https://www.google.com/jsapi"></script>
 <link rel="stylesheet" href="css/mainpage.css" >
-<link rel="stylesheet" href="css/jquery-ui.css">
+
+<!-- for datepicker -->
+<link rel="stylesheet"  href="js/jquery.mobile-1.4.2/jquery.mobile-1.4.2.css" /> 
+<link rel="stylesheet" href="css/jquery.mobile.datepicker.css" />
+<script src="js/jquery-1.10.2.js"></script> 
+<script src="js/jquery.ui.datepicker.js"></script>
+<script src="js/jquery.mobile-1.4.2/jquery.mobile-1.4.2.js"></script> 
+<script src="js/jquery.mobile.datepicker.js"></script>
+
+<!-- for draw chart --> 
+<script src="js/jscharts.js"></script>
 
 </head>
 <body>
@@ -38,20 +42,13 @@
                 	<!--h1>Sổ nợ</h1-->
                 </div>
                 <div id="trendsIcon">
-	                <a href="#trends"><img src="images/statistic_150_150.png" alt="Thống kê" onClick="onTrends()"/></a>
+	                <a href="#trends"><img src="images/statistic_150_150.png" alt="Thống kê" onClick="resetFields()"/></a>
                 	<!--h1>Thống kê</h1-->
                 </div>
             </div>
         </div>
         <div data-role="footer" data-id="persistfooter" 
         data-position="fixed" >
-            <!--div data-role="navbar">
-                <ul>
-                    <li><a href="#" data-role="button">New</a></li>
-                    <li><a href="#" data-role="button">Popular</a></li>
-                    <li><a href="#" data-role="button">Classics</a></li>
-                </ul>
-            </div-->
         </div>
 	</div>
     <div id="addTransactionPage" data-role="page" data-dialog="true" >
@@ -66,7 +63,7 @@
                     </select>
                     <input type="number" id="amount" step="1" min="0" placeholder='Nhập số tiền' >
 					<textarea cols="40" rows="8" name="txtNote" id="txtNote" placeholder='Ghi chú' ></textarea>
-                    <input type="text" data-role="date" id="dateTrans" placeholder='Ngày giao dịch'>
+                    <input type="text" class="date-input" data-role="date" data-inline="false" id="dateTrans" placeholder='Ngày giao dịch'>
 
             </div>
         </div>
@@ -184,14 +181,26 @@
         data-position="fixed" id="trendsmainpageHeader">
 	        <a href="#mainpage" data-icon="arrow-l" onClick="resetFields()">Quay lại</a>
 	        <h1 id="accountDisplay">Thống kê</h1>
+            <div data-role="navbar">
+                <ul>
+                    <li><a href="#" id="previousMonth" data-role="button" data-icon="arrow-l" onClick="onPreviousMonthTrend()">Tháng trước</a></li>
+                    <!--li><a href="#" id="currentMonth" onClick="onCurrentMonth()">Tháng này</a></li-->
+                    <li><a href="#" id="nextMonth" data-role="button" data-icon="arrow-r" onClick="onNextMonthTrend()">Tháng sau</a></li>
+                </ul>
+            </div>
     	</div>
         <div data-role="content" id="trendsmainContent">
-        	<div id="statistic">
-            	<p id="totalIncome"></p>
-                <p id="totalOutcome"></p>
-                <p id="balance"></p>
+	        <div>
+            	<h3 id='currentTimeTrend' style='text-align:center;'>Tháng 5</h3>
             </div>
-            <div id="piechart" style="width: 700px; height: 300px;"></div>
+        	<div id="statistic" style="text-align:left; padding-left:3%; padding-bottom:10%; padding-top:3%;">
+				<ul data-role="listview">
+                    <li>Tổng thu tháng : <span id="totalIncome">0</span></li>
+                    <li>Tổng chi tháng : <span id="totalOutcome">0</span></li>
+                    <li>Số dư : <span id="balance" style="color:red">-0</span></li>
+                </ul>
+            </div>
+            <div id="graph">Loading...</div>
         </div>
         <div data-role="footer" data-id="persistfooter" 
         data-position="fixed" >
@@ -204,7 +213,7 @@
 </html>
 <script>
 	$(document).ready(function(){
-		$("#dateTrans").datepicker();
+		//$("#dateTrans").datepicker();
 		
 		var db = window.openDatabase("myDatabase", "1.0", "My WebSQL database", 5*1024*1024);
 		
@@ -217,5 +226,6 @@
 		getCategory(db);	
 		getListTransaction();
 		getListDebt();
+		updateMonthDisplayForTrend();
 	});
 </script>
