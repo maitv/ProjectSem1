@@ -35,6 +35,11 @@ currentYear = date.getFullYear();
 currentYearDebt = date.getFullYear();
 currentYearTrend = date.getFullYear();
 
+// For update transaction
+var currentCategoryID = 0;
+var currentTransactionID = 0;
+var currentLocation = 0; // 0 - transaction 1- debts
+
 var categoryColorArray = ['#99CDFB','#3366FB','#0000FA','#F8CC00','#F89900','#F76600', '#B20EF7', '#F77B0E', '#02C627'];
 
 function onReadyTransaction( ){
@@ -46,6 +51,7 @@ function onSuccessExecuteSql( tx, results ){
 }
 
 function onErrorCommon(err){
+	alert('err');
 	console.log( err );
 }
 
@@ -158,35 +164,6 @@ function SetConfigured(db){
 		onErrorCommon,
 		onReadyTransaction
 	);
-	
-	// Other spent
-	/*db.transaction(
-		function(tx){
-		tx.executeSql(
-			"INSERT INTO Category(CategoryName, CategoryType, CategoryTypeSpecify, isDefault) VALUES(?, ?, ?, ?)",
-			['Khác', 0, 1, 0],
-			onSuccessExecuteSql,
-			onErrorCommon
-		)
-		},
-		onErrorCommon,
-		onReadyTransaction
-	);*/
-	
-	// Other spent
-	/*db.transaction(
-		function(tx){
-		tx.executeSql(
-			"INSERT INTO Category(CategoryName, CategoryType, CategoryTypeSpecify, isDefault) VALUES(?, ?, ?, ?)",
-			['Khác', 1, 1, 0],
-			onSuccessExecuteSql,
-			onErrorCommon
-		)
-		},
-		onErrorCommon,
-		onReadyTransaction
-	);
-	*/
 	
 	// Debt and loan
 	db.transaction(
@@ -321,9 +298,6 @@ function getCategoryDisplay(tx, results){
 	
 	// Refresh menu 
 	$('#category').selectmenu('refresh');
-/*	var newOption = "<option value='dynamic'>Dynamic Entry</option>";
-    $("#category").append(newOption).selectmenu('refresh');
-	alert('after refresh menu');*/
 }
 
 function getCategory(db){
@@ -356,10 +330,13 @@ function getDb(){
 }
 
 function resetFields(){
-	//document.getElementById('category').value = "" ;
+	var myDate = new Date();
+	var defaultDate = (myDate.getMonth()+1) + '/' + myDate.getDate() + '/' + myDate.getFullYear();
+	
 	document.getElementById('amount').value = "";
 	document.getElementById('txtNote').value = "";
-	document.getElementById('dateTrans').value = "";
+	//document.getElementById('dateTrans').value = "";
+	$('#dateTrans').val(defaultDate);
 }	
 
 function onCreateTransactionSuccess(){
@@ -444,7 +421,41 @@ function updateMonthDisplayForTrend(){
 }
 
 // For transaction
+function buildCategoryListDisplay(tx, results){
+	var len = results.rows.length, i;
+	var i;
+	
+	// initialize category menu
+	$('#categoryUpdate').selectmenu();
+	
+	// Default
+	$("#categoryUpdate").append(new Option("Chọn thể loại", 0));
+	//$("#categoryUpdate").val(0);
+	
+	for (i = 0; i < len; i++) {
+		$("#categoryUpdate").append(new Option(results.rows.item(i).CategoryName, results.rows.item(i).CategoryID));
+	}
+	
+	$("#categoryUpdate").val(currentCategoryID);
+	
+	// Refresh menu 
+	$('#categoryUpdate').selectmenu('refresh');
+}
 
+function buildCategoryList(){
+	db.transaction(
+			function(tx){				
+				tx.executeSql(
+				"SELECT * FROM Category WHERE CategoryID > 1",
+				[],
+				buildCategoryListDisplay,
+				onErrorCommon
+			)
+		},
+		onErrorCommon,
+		onReadyTransaction
+	);
+}
 
 function showTransactionDetailResult(tx, results){
 	if( results.rows.length > 0){
@@ -458,10 +469,13 @@ function showTransactionDetailResult(tx, results){
 		var amount = "Số tiền: " + row['Amount'];
 		
 		// Set Information in dialog page
-		$('#dateTransaction').text(fulldate);
-		$('#descriptionTransaction').text(description);
-		$('#amoutTransaction').text(amount);
-
+		$('#amountUpdate').val(formatCurrency(row['Amount']));
+		$('#txtNoteUpdate').val(row['Description']);
+		$('#dateTransUpdate').val(row['TransactionDate']);
+		//$("#category").val(row['TransactionID']);
+		buildCategoryList();
+		currentCategoryID = row['CategoryID'];
+		currentTransactionID = row['TransactionID'];
 						
 		window.location.href = '#showInformationTransactionPage';
 	}else{
@@ -471,13 +485,15 @@ function showTransactionDetailResult(tx, results){
 }
 
 function showTransactionDetail(id){
+	currentLocation = 0;
+	
 	db = getDb();
 	
 	db.transaction(
 					function(tx){				
 						tx.executeSql(
-						"SELECT Transactions.Description, Transactions.Amount, Transactions.TransactionDate\
-						FROM Transactions WHERE TransactionID=?",
+						"SELECT Category.CategoryName, Category.CategoryID, Transactions.TransactionID, Transactions.Description, Transactions.Amount, Transactions.TransactionDate\
+							FROM Category INNER JOIN Transactions on Category.CategoryID=Transactions.CategoryID WHERE TransactionID=?",
 						[id],
 						showTransactionDetailResult,
 						onErrorCommon
@@ -590,11 +606,19 @@ function showDebtDetailResult(tx, results){
 		var amount = "Số tiền: " + row['Amount'];
 		
 		// Set Information in dialog page
-		$('#dateDebt').text(fulldate);
+		/*$('#dateDebt').text(fulldate);
 		$('#descriptionDebt').text(description);
-		$('#amoutDebt').text(amount);
+		$('#amoutDebt').text(amount);*/
+		// Set Information in dialog page
+		$('#amountUpdate').val(formatCurrency(row['Amount']));
+		$('#txtNoteUpdate').val(row['Description']);
+		$('#dateTransUpdate').val(row['TransactionDate']);
+		//$("#category").val(row['TransactionID']);
+		buildCategoryList();
+		currentCategoryID = row['CategoryID'];
+		currentTransactionID = row['TransactionID'];
 		
-		window.location.href = '#showInformationDebtPage';
+		window.location.href = '#showInformationTransactionPage';
 	}else{
 		// ID not valid 
 		// Do notthing
@@ -602,13 +626,15 @@ function showDebtDetailResult(tx, results){
 }
 
 function showDebtDetail(id){
+	currentLocation = 1;
+	
 	db = getDb();
 	
 	db.transaction(
 					function(tx){				
 						tx.executeSql(
-						"SELECT Transactions.Description, Transactions.Amount, Transactions.TransactionDate\
-						FROM Transactions WHERE TransactionID=?",
+						"SELECT Category.CategoryName, Category.CategoryID, Transactions.TransactionID, Transactions.Description, Transactions.Amount, Transactions.TransactionDate\
+							FROM Category INNER JOIN Transactions on Category.CategoryID=Transactions.CategoryID WHERE TransactionID=?",
 						[id],
 						showDebtDetailResult,
 						onErrorCommon
@@ -889,9 +915,9 @@ function getStatictisDisplayResult(tx, results){
 	}
 	
 	// update statistic
-	$('#totalIncome').text(formatCurrency(totalIncome) + "VND");
-	$('#totalOutcome').text(formatCurrency(totalOutcome) + "VND");
-	$('#balance').text(formatCurrency(balance) + "VND");
+	$('#totalIncome').text(formatCurrency(totalIncome) + " VND");
+	$('#totalOutcome').text(formatCurrency(totalOutcome) + " VND");
+	$('#balance').text(formatCurrency(balance) + " VND");
 }
 
 function getStatictis(){
@@ -932,4 +958,92 @@ function formatCurrency(num) {
 function AutoFormatDigit(obj) {
 	var num = formatCurrency($(obj).val());
 	$(obj).val(num);
+}
+
+function onDeleteTransactionSuccess(){	
+	if(currentLocation == 0){
+		getListTransaction();
+		window.location.href = '#listTransaction';
+	}else{
+		getListDebt();
+		window.location.href = '#listDebts';
+	}
+}
+
+function onDeleteTransaction(){
+	db = getDb();
+	
+	db.transaction(
+		function(tx){
+		tx.executeSql(
+			"DELETE FROM Transactions WHERE TransactionID = ?",
+			[currentTransactionID],
+			onDeleteTransactionSuccess,
+			onErrorCommon
+		)
+		},
+		onErrorCommon,
+		onReadyTransaction
+	);
+}
+// For update and delete transaction
+function onRemoveTransaction(){
+	window.location.href = "#confirmation";
+}
+
+function onUpdateTransactionSuccess(){
+	if(currentLocation == 0){
+		getListTransaction();
+	}else{
+		getListDebt();
+	}
+	
+	window.location.href = "#updateTransactionSuccess";
+}
+
+function onUpdateTransaction(){
+	db = getDb();
+	
+	if( db){
+		var categoryID = 0;
+		var amount = 0;
+		var note = "";
+		
+		categoryID = parseInt(document.getElementById('categoryUpdate').value) ;
+		amountTmp = document.getElementById('amountUpdate').value.toString().replace(/\$|\./g,'');
+		//amount = parseInt(document.getElementById('amount').value);
+		amount = parseInt(amountTmp);
+		note = document.getElementById('txtNoteUpdate').value;
+		dateTrans = document.getElementById('dateTransUpdate').value;
+		
+		//alert('Kiểm tra lại thể loại/ nhập số tiền ' + categoryID + " " + amount + " " + note + " " + dateTrans);
+		
+		if( categoryID == 0 || isNaN(amount) ||
+			note == "" || dateTrans == "" )
+		{
+			alert('Kiểm tra lại thông tin thể loại/ nhập số tiền/ ghi chú/ ngày giao dịch!');
+			return;
+		}
+		
+		db.transaction(
+					function(tx){				
+						tx.executeSql(
+						"UPDATE Transactions SET Amount=?, Description = ?, CategoryID = ?, TransactionDate = ? WHERE TransactionID = ?",
+						[amount, note, categoryID, dateTrans, currentTransactionID],
+						onUpdateTransactionSuccess,
+						onErrorCommon
+					)
+				},
+				onErrorCommon,
+				onReadyTransaction
+			);
+	}
+}
+
+function onRedirection(){
+	if(currentLocation == 0){
+		window.location.href = '#listTransaction';
+	}else{
+		window.location.href = '#listDebts';
+	}
 }

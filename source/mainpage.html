@@ -86,11 +86,29 @@
        		<h1>Chi tiết</h1>
         </div>
         <div 
-        <div data-role="main" class="ui-content" align="left">
+        <div data-role="main" class="ui-content">
         	<!--a href="#listTransaction">Đóng lại</a-->
-            <p id="dateTransaction"></p>            
+            <!--p id="dateTransaction"></p>            
             <p id="descriptionTransaction"></p>
-            <p id="amoutTransaction"></p>
+            <p id="amoutTransaction"></p-->
+            <form >
+                    <select name="category" id="categoryUpdate">
+                    </select>
+                    <input type="text" id="amountUpdate" placeholder='Nhập số tiền' onKeyUp="AutoFormatDigit(this)">
+					<textarea cols="40" rows="8" name="txtNote" id="txtNoteUpdate" placeholder='Ghi chú' ></textarea>
+                    <input type="text" class="date-input" data-role="date" data-inline="false" id="dateTransUpdate" placeholder='Ngày giao dịch'>
+        </div>
+        
+        <div data-role="footer" data-id="persistfooter" 
+        data-position="fixed" >
+            <div data-role="navbar">
+                <ul>
+                	<li><!--input type="submit" value="Lưu" onClick="onCreateTransaction()" class="ui-btn ui-icon-delete ui-btn-icon-left"></li-->
+                    <a href="#" data-role="button" data-icon="check" onClick="onUpdateTransaction()">Sửa thông tin</a></li>
+                    <li><a href="#mainpage" data-role="button" data-icon="delete" onClick="onRemoveTransaction()">Xóa bỏ</a></li>
+                </ul>
+            </div>
+                </form>            
         </div>
     </div>
     
@@ -108,6 +126,28 @@
         </div>
     </div>
     
+    <!-- for confirmation -->
+     <div data-role="page" data-dialog="true" id="confirmation">
+        <div data-role="header">
+       		<h1>Thông báo</h1>
+        </div>
+        
+        <div data-role="main" class="ui-content" align="center">
+	        <!--p id="dateDebt"></p>
+            <p id="descriptionDebt"></p>
+            <p id="amoutDebt"></p-->
+            <p>Bạn muốn xóa item này?</p>
+			<div data-role="navbar">
+                <ul>
+                	<li><!--input type="submit" value="Lưu" onClick="onCreateTransaction()" class="ui-btn ui-icon-delete ui-btn-icon-left"></li-->
+                   	<a href="#" data-role="button" onClick="onDeleteTransaction()">Chấp nhận</a></li>
+                    <li><a href="#listTransaction" data-role="button">Hủy bỏ</a></li>
+                </ul>
+            </div>
+            
+        </div>
+    </div>
+    
      <div data-role="page" data-dialog="true" id="addTransactionSuccess" data-close-btn="none">
         <div data-role="header">
        		<h1>Thông báo</h1>
@@ -115,6 +155,16 @@
         
         <div data-role="main" class="ui-content" style="text-align:center">
         	<p>Thêm mới thành công ! </p><a href="#mainpage">Đóng lại</a>
+        </div>
+    </div>
+    
+    <div data-role="page" data-dialog="true" id="updateTransactionSuccess" data-close-btn="none">
+        <div data-role="header">
+       		<h1>Thông báo</h1>
+        </div>
+        
+        <div data-role="main" class="ui-content" style="text-align:center">
+        	<p>Sửa hoàn thành! </p><a href="#" onClick="onRedirection()">Đóng lại</a>
         </div>
     </div>
     
