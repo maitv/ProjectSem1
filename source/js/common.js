@@ -17,9 +17,13 @@ var currentYear = 0;
 var currentYearDebt = 0;
 var currentYearTrend = 0;
 
+// const
+var currentMonthConst = 0;
+
 // Initialization for current month
 var date = new Date();
 currentMonth = date.getMonth();	
+currentMonthConst = date.getMonth();
 currentMonthDebt = currentMonth;
 currentMonthTrend = currentMonth;
 
@@ -40,7 +44,7 @@ var currentCategoryID = 0;
 var currentTransactionID = 0;
 var currentLocation = 0; // 0 - transaction 1- debts
 
-var categoryColorArray = ['#99CDFB','#3366FB','#0000FA','#F8CC00','#F89900','#F76600', '#B20EF7', '#F77B0E', '#02C627'];
+var categoryColorArray = ['#99CDFB','#3366FB','#0000FA','#F8CC00','#F89900','#F76600', '#B20EF7', '#F77B0E', '#02C627', '#0FBC45'];
 
 function onReadyTransaction( ){
 	console.log( 'Transaction completed' )
@@ -810,8 +814,11 @@ function drawPieChartDisplayResult(tx, results){
 	var balance = 0;
 	
 	var myChart = new JSChart('graph', 'pie');
-	var arrayCnt = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'];
+	var arrayCnt = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
 	var isExits = false;
+	
+	var arrayAmount = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10];
+	var arrayCategoryName = ['', '', '', '', '', '', '', '', ''];
 	
 	if( len > 0){
 		var arrayColor = new Array();
@@ -825,10 +832,25 @@ function drawPieChartDisplayResult(tx, results){
 			// Get date and month
 			if( da.getMonth() == currentMonthTrend && date.getFullYear() == currentYearTrend){		
 				isExits = true;
+				arrayAmount[row['CategoryID']] += row['Amount'];
+				arrayCategoryName[row['CategoryID']] = row['CategoryName']; ;
+				//arrayAmount[row['CategoryID']] = arrayAmount[row['CategoryID']] + row['Amount'];
+				//arrayCategoryName[row['CategoryID']] = row['CategoryName'];
 				//myChart.colorize(['#99CDFB','#3366FB','#0000FA','#F8CC00','#F89900','#F76600']);
+				//arrayColor[counter] = categoryColorArray[counter];
+				//myChart.setLegend(categoryColorArray[counter], row['CategoryName']);
+				//myData[counter] = [arrayCnt[counter], 111];
+				//counter += 1;
+			}
+		}
+		
+		counter = 0;
+		// Set color and title
+		for( cnt = 0; cnt <= 9; cnt++){
+			if(arrayAmount[cnt] > 0){
 				arrayColor[counter] = categoryColorArray[counter];
-				myChart.setLegend(categoryColorArray[counter], row['CategoryName']);
-				myData[counter] = [arrayCnt[counter], row['total']];
+				myChart.setLegend(categoryColorArray[counter], arrayCategoryName[cnt]);
+				myData[counter] = [arrayCnt[counter], arrayAmount[cnt]];
 				counter += 1;
 			}
 		}
@@ -872,8 +894,8 @@ function drawPieChart(){
 	db.transaction(
 			function(tx){				
 				tx.executeSql(
-				"SELECT Category.CategoryID, Category.CategoryName, Transactions.TransactionID, Transactions.Description, Transactions.TransactionDate, SUM(Transactions.Amount) AS total\
-				FROM Category INNER JOIN Transactions on Category.CategoryID=Transactions.CategoryID WHERE Category.CategoryType = 1 GROUP BY Category.CategoryID ORDER BY Transactions.TransactionDate ASC",
+				"SELECT Category.CategoryID, Category.CategoryName, Transactions.TransactionID, Transactions.Description, Transactions.TransactionDate, Transactions.Amount \
+				FROM Category INNER JOIN Transactions on Category.CategoryID=Transactions.CategoryID WHERE Category.CategoryType = 1 ORDER BY Transactions.TransactionDate ASC",
 				[],
 				drawPieChartDisplayResult,
 				onErrorCommon
