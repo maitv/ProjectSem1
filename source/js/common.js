@@ -349,7 +349,7 @@ function onCreateTransactionSuccess(){
 	getListDebt();
 	
 	// Update trend
-	updateMonthDisplayForTrend();
+	//updateMonthDisplayForTrend();
 	
 	window.location.href = '#addTransactionSuccess';
 }
