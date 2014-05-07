@@ -22,7 +22,7 @@
 	$(document).ready(function(){
 		
 		// Run in mode debug or not
-		debugging = 0;
+		debugging =0;
 		
 		var conf = false;
 		var accountExisted = false;
@@ -75,6 +75,7 @@
 		}
 		
 		function IsConfigReturn(tx, results){
+			console.log("results.rows.length " + results.rows.length);
 			if(results.rows.length > 0) {
 				 conf = true;
 				 startConfig(db);

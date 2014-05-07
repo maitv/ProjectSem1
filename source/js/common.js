@@ -47,16 +47,15 @@ var currentLocation = 0; // 0 - transaction 1- debts
 var categoryColorArray = ['#99CDFB','#3366FB','#0000FA','#F8CC00','#F89900','#F76600', '#B20EF7', '#F77B0E', '#02C627', '#0FBC45'];
 
 function onReadyTransaction( ){
-	console.log( 'Transaction completed' )
+	//console.log( 'Transaction completed' )
 }
 
 function onSuccessExecuteSql( tx, results ){
-	console.log( 'Execute SQL completed' )
+	//console.log( 'Execute SQL completed' )
 }
 
 function onErrorCommon(err){
-	alert('err');
-	console.log( err );
+	//console.log( err );
 }
 
 function SetConfigured(db){
@@ -78,8 +77,8 @@ function SetConfigured(db){
 	db.transaction(
 		function(tx){
 		tx.executeSql(
-			"INSERT INTO Category(CategoryName, CategoryType, CategoryTypeSpecify, isInitialization) VALUES(?, ?, ?, ?)",
-			['Khởi tạo', 0, 1, 1],
+			"INSERT INTO Category(CategoryID, CategoryName, CategoryType, CategoryTypeSpecify, isInitialization) VALUES(?, ?, ?, ?, ?)",
+			[1, 'Khởi tạo', 0, 1, 1],
 			onSuccessExecuteSql,
 			onErrorCommon
 		)
@@ -92,8 +91,8 @@ function SetConfigured(db){
 	db.transaction(
 		function(tx){
 		tx.executeSql(
-			"INSERT INTO Category(CategoryName, CategoryType, CategoryTypeSpecify, isInitialization) VALUES(?, ?, ?, ?)",
-			['Lương tháng', 0, 1, 0],
+			"INSERT INTO Category(CategoryID, CategoryName, CategoryType, CategoryTypeSpecify, isInitialization) VALUES(?, ?, ?, ?, ?)",
+			[2, 'Lương tháng', 0, 1, 0],
 			onSuccessExecuteSql,
 			onErrorCommon
 		)
@@ -105,8 +104,8 @@ function SetConfigured(db){
 	db.transaction(
 		function(tx){
 		tx.executeSql(
-			"INSERT INTO Category(CategoryName, CategoryType, CategoryTypeSpecify, isInitialization) VALUES(?, ?, ?, ?)",
-			['Thưởng', 0, 1, 0],
+			"INSERT INTO Category(CategoryID, CategoryName, CategoryType, CategoryTypeSpecify, isInitialization) VALUES(?, ?, ?, ?, ?)",
+			[3, 'Thưởng', 0, 1, 0],
 			onSuccessExecuteSql,
 			onErrorCommon
 		)
@@ -119,8 +118,8 @@ function SetConfigured(db){
 	db.transaction(
 		function(tx){
 		tx.executeSql(
-			"INSERT INTO Category(CategoryName, CategoryType, CategoryTypeSpecify, isInitialization) VALUES(?, ?, ?, ?)",
-			['Tiền ăn', 1, 1, 0],
+			"INSERT INTO Category(CategoryID, CategoryName, CategoryType, CategoryTypeSpecify, isInitialization) VALUES(?, ?, ?, ?, ?)",
+			[4, 'Tiền ăn', 1, 1, 0],
 			onSuccessExecuteSql,
 			onErrorCommon
 		)
@@ -132,8 +131,8 @@ function SetConfigured(db){
 	db.transaction(
 		function(tx){
 		tx.executeSql(
-			"INSERT INTO Category(CategoryName, CategoryType, CategoryTypeSpecify, isInitialization) VALUES(?, ?, ?, ?)",
-			['Đổ xăng', 1, 1, 0],
+			"INSERT INTO Category(CategoryID, CategoryName, CategoryType, CategoryTypeSpecify, isInitialization) VALUES(?, ?, ?, ?, ?)",
+			[5, 'Đổ xăng', 1, 1, 0],
 			onSuccessExecuteSql,
 			onErrorCommon
 		)
@@ -146,8 +145,8 @@ function SetConfigured(db){
 	db.transaction(
 		function(tx){
 		tx.executeSql(
-			"INSERT INTO Category(CategoryName, CategoryType, CategoryTypeSpecify, isInitialization) VALUES(?, ?, ?, ?)",
-			['Tiền nhà', 1, 1, 0],
+			"INSERT INTO Category(CategoryID, CategoryName, CategoryType, CategoryTypeSpecify, isInitialization) VALUES(?, ?, ?, ?, ?)",
+			[6, 'Tiền nhà', 1, 1, 0],
 			onSuccessExecuteSql,
 			onErrorCommon
 		)
@@ -159,8 +158,8 @@ function SetConfigured(db){
 	db.transaction(
 		function(tx){
 		tx.executeSql(
-			"INSERT INTO Category(CategoryName, CategoryType, CategoryTypeSpecify, isInitialization) VALUES(?, ?, ?, ?)",
-			['Du lịch', 1, 1, 0],
+			"INSERT INTO Category(CategoryID, CategoryName, CategoryType, CategoryTypeSpecify, isInitialization) VALUES(?, ?, ?, ?, ?)",
+			[7, 'Du lịch', 1, 1, 0],
 			onSuccessExecuteSql,
 			onErrorCommon
 		)
@@ -173,8 +172,8 @@ function SetConfigured(db){
 	db.transaction(
 		function(tx){
 		tx.executeSql(
-			"INSERT INTO Category(CategoryName, CategoryType, CategoryTypeSpecify, isInitialization) VALUES(?, ?, ?, ?)",
-			['Vay tiền', 0, 0, 0],
+			"INSERT INTO Category(CategoryID, CategoryName, CategoryType, CategoryTypeSpecify, isInitialization) VALUES(?, ?, ?, ?, ?)",
+			[8, 'Vay tiền', 0, 0, 0],
 			onSuccessExecuteSql,
 			onErrorCommon
 		)
@@ -186,8 +185,8 @@ function SetConfigured(db){
 	db.transaction(
 		function(tx){
 		tx.executeSql(
-			"INSERT INTO Category(CategoryName, CategoryType, CategoryTypeSpecify, isInitialization) VALUES(?, ?, ?, ?)",
-			['Cho vay', 1, 0, 0],
+			"INSERT INTO Category(CategoryID, CategoryName, CategoryType, CategoryTypeSpecify, isInitialization) VALUES(?, ?, ?, ?, ?)",
+			[9, 'Cho vay', 1, 0, 0],
 			onSuccessExecuteSql,
 			onErrorCommon
 		)
@@ -233,7 +232,7 @@ function createTableCategory(db){
 	db.transaction(
 		function(tx){
 			tx.executeSql(
-				"CREATE TABLE IF NOT EXISTS Category (CategoryID INTEGER PRIMARY KEY AUTOINCREMENT, CategoryName TEXT, CategoryType INTEGER, CategoryTypeSpecify INTEGER, isInitialization INTEGER, isDefault INTEGER)",
+				"CREATE TABLE IF NOT EXISTS Category (CategoryID INTEGER PRIMARY KEY, CategoryName TEXT, CategoryType INTEGER, CategoryTypeSpecify INTEGER, isInitialization INTEGER, isDefault INTEGER)",
 				[],
 				onSuccessExecuteSql,
 				onErrorCommon
@@ -289,6 +288,9 @@ function getCategoryDisplay(tx, results){
 	var len = results.rows.length, i;
 	var i;
 	
+	// Empty before add
+	$('#category').empty();
+	
 	// initialize category menu
 	$('#category').selectmenu();
 	
@@ -297,6 +299,7 @@ function getCategoryDisplay(tx, results){
 	$("#category").val(0);
 	
 	for (i = 0; i < len; i++) {
+//		console.log(results.rows.item(i).CategoryID + " " + results.rows.item(i).CategoryName);
 		$("#category").append(new Option(results.rows.item(i).CategoryName, results.rows.item(i).CategoryID));
 	}
 	
@@ -430,6 +433,7 @@ function buildCategoryListDisplay(tx, results){
 	var i;
 	
 	// initialize category menu
+	$('#categoryUpdate').empty();
 	$('#categoryUpdate').selectmenu();
 	
 	// Default
@@ -859,7 +863,7 @@ function drawPieChartDisplayResult(tx, results){
 			// draw pie chart
 			myChart.setDataArray(myData);
 			myChart.colorize(arrayColor);
-			myChart.setSize(500, 300);
+			myChart.setSize(560, 300);
 			myChart.setTitle('Biểu đồ thống kê chi tiêu');
 			myChart.setTitleFontFamily('Times New Roman');
 			myChart.setTitleFontSize(14);
@@ -867,7 +871,7 @@ function drawPieChartDisplayResult(tx, results){
 			myChart.setPieRadius(100);
 			myChart.setPieValuesColor('#FFFFFF');
 			myChart.setPieValuesFontSize(9);
-			myChart.setPiePosition(130, 150);
+			myChart.setPiePosition(160, 180);
 			myChart.setShowXValues(false);
 			/*myChart.setLegend('#99CDFB', 'Papers where authors found');
 			myChart.setLegend('#3366FB', 'Papers which cite from other articles');
@@ -878,7 +882,7 @@ function drawPieChartDisplayResult(tx, results){
 			myChart.setLegendShow(true);
 			myChart.setLegendFontFamily('Times New Roman');
 			myChart.setLegendFontSize(15);
-			myChart.setLegendPosition(280, 120);
+			myChart.setLegendPosition(300, 120);
 			myChart.setPieAngle(0);
 			myChart.set3D(true);
 			myChart.draw();
@@ -983,6 +987,8 @@ function AutoFormatDigit(obj) {
 }
 
 function onDeleteTransactionSuccess(){	
+	updateMonthDisplayForTrend();
+	
 	if(currentLocation == 0){
 		getListTransaction();
 		window.location.href = '#listTransaction';
@@ -1014,6 +1020,8 @@ function onRemoveTransaction(){
 }
 
 function onUpdateTransactionSuccess(){
+	updateMonthDisplayForTrend();
+	
 	if(currentLocation == 0){
 		getListTransaction();
 	}else{

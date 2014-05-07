@@ -39,6 +39,9 @@
 <script>
 	$(document).ready(function(){
 		//$("#dateTrans").datepicker();
+		var myDate = new Date();
+		var defaultDate = (myDate.getMonth()+1) + '/' + myDate.getDate() + '/' + myDate.getFullYear();
+		$('#dateTrans').val(defaultDate);
 	});	
 	
 	// Open db
