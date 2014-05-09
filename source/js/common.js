@@ -816,6 +816,8 @@ function drawPieChartDisplayResult(tx, results){
 	var totalIncome  = 0;
 	var totalOutcome = 0;
 	var balance = 0;
+	var widthScreen = screen.width;
+	var heightScreen =screen.height;
 	
 	var myChart = new JSChart('graph', 'pie');
 	var arrayCnt = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
@@ -863,7 +865,7 @@ function drawPieChartDisplayResult(tx, results){
 			// draw pie chart
 			myChart.setDataArray(myData);
 			myChart.colorize(arrayColor);
-			myChart.setSize(560, 300);
+			myChart.setSize(480, 300);
 			myChart.setTitle('Biểu đồ thống kê chi tiêu');
 			myChart.setTitleFontFamily('Times New Roman');
 			myChart.setTitleFontSize(14);
