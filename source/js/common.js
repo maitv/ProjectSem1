@@ -551,8 +551,10 @@ function getListTransactionDisplayResult(tx, results){
 					isFirst = false;
 				}
 				
-				$("#ulListTransaction").append("<li id=" + row['TransactionID'] + "><a href='#'>" + subDescription
-				+ "</a><span class='ui-li-count ui-btn-up-c ui-btn-corner-all'>" + formatCurrency(row['Amount']) + " VND</span></li>");		
+			/*	$("#ulListTransaction").append("<li id=" + row['TransactionID'] + "><a href='#'>" + subDescription
+				+ "</a><span class='ui-li-count ui-btn-up-c ui-btn-corner-all'>" + formatCurrency(row['Amount']) + " VND</span></li>");		*/
+				$("#ulListTransaction").append("<li id=" + row['TransactionID'] + "><a href='#'><h3>" + subDescription
+				+ "</h3><p>" + formatCurrency(row['Amount']) + " VND</p></a></li>");		
 				
 				// There is an item or more in list
 				isExist = true;		
@@ -692,8 +694,10 @@ function getListDebtDisplayResult(tx, results){
 					isFirst = false;
 				}
 				
-				$("#ulListDebt").append("<li id=" + row['TransactionID'] + "><a href='#'>" + subDescription
-				+ "</a><span class='ui-li-count ui-btn-up-c ui-btn-corner-all'>" + formatCurrency(row['Amount']) + " VND</span></li>");	
+				/*$("#ulListDebt").append("<li id=" + row['TransactionID'] + "><a href='#'>" + subDescription
+				+ "</a><span class='ui-li-count ui-btn-up-c ui-btn-corner-all'>" + formatCurrency(row['Amount']) + " VND</span></li>");	*/
+				$("#ulListDebt").append("<li id=" + row['TransactionID'] + "><a href='#'><h3>" + subDescription
+				+ "</h3><p>" + formatCurrency(row['Amount']) + " VND</p></a></li>");
 				
 				// There is an item or more in list
 				isExist = true;		
