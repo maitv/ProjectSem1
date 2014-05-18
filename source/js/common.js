@@ -1048,7 +1048,7 @@ function onUpdateTransaction(){
 		var note = "";
 		
 		categoryID = parseInt(document.getElementById('categoryUpdate').value) ;
-		amountTmp = document.getElementById('amountUpdate').value.toString().replace(/\$|\./g,'');
+		amountTmp = document.getElementById('amountUpdate').value.toString().replace(/\$|\.|\ VND/g,'');
 		//amount = parseInt(document.getElementById('amount').value);
 		amount = parseInt(amountTmp);
 		note = document.getElementById('txtNoteUpdate').value;
