@@ -20,6 +20,9 @@ var currentYearTrend = 0;
 // const
 var currentMonthConst = 0;
 
+// For format number
+var strNumber = '';
+
 // Initialization for current month
 var date = new Date();
 currentMonth = date.getMonth();	
@@ -371,7 +374,7 @@ function onCreateTransaction(){
 		var note = "";
 		
 		categoryID = parseInt(document.getElementById('category').value) ;
-		amountTmp = document.getElementById('amount').value.toString().replace(/\$|\./g,'');
+		amountTmp = document.getElementById('amount').value.toString().replace(/\$|\.|\ VND/g,'');
 		//amount = parseInt(document.getElementById('amount').value);
 		amount = parseInt(amountTmp);
 		note = document.getElementById('txtNote').value;
@@ -554,7 +557,7 @@ function getListTransactionDisplayResult(tx, results){
 			/*	$("#ulListTransaction").append("<li id=" + row['TransactionID'] + "><a href='#'>" + subDescription
 				+ "</a><span class='ui-li-count ui-btn-up-c ui-btn-corner-all'>" + formatCurrency(row['Amount']) + " VND</span></li>");		*/
 				$("#ulListTransaction").append("<li id=" + row['TransactionID'] + "><a href='#'><h3>" + subDescription
-				+ "</h3><p>" + formatCurrency(row['Amount']) + " VND</p></a></li>");		
+				+ "</h3><p>" + formatCurrency(row['Amount']) + "</p></a></li>");		
 				
 				// There is an item or more in list
 				isExist = true;		
@@ -697,7 +700,7 @@ function getListDebtDisplayResult(tx, results){
 				/*$("#ulListDebt").append("<li id=" + row['TransactionID'] + "><a href='#'>" + subDescription
 				+ "</a><span class='ui-li-count ui-btn-up-c ui-btn-corner-all'>" + formatCurrency(row['Amount']) + " VND</span></li>");	*/
 				$("#ulListDebt").append("<li id=" + row['TransactionID'] + "><a href='#'><h3>" + subDescription
-				+ "</h3><p>" + formatCurrency(row['Amount']) + " VND</p></a></li>");
+				+ "</h3><p>" + formatCurrency(row['Amount']) + "</p></a></li>");
 				
 				// There is an item or more in list
 				isExist = true;		
@@ -947,9 +950,9 @@ function getStatictisDisplayResult(tx, results){
 	}
 	
 	// update statistic
-	$('#totalIncome').text(formatCurrency(totalIncome) + " VND");
-	$('#totalOutcome').text(formatCurrency(totalOutcome) + " VND");
-	$('#balance').text(formatCurrency(balance) + " VND");
+	$('#totalIncome').text(formatCurrency(totalIncome));
+	$('#totalOutcome').text(formatCurrency(totalOutcome));
+	$('#balance').text(formatCurrency(balance));
 }
 
 function getStatictis(){
@@ -971,20 +974,19 @@ function getStatictis(){
 }
 
 function formatCurrency(num) {
-	num = num.toString().replace(/\$|\./g,'');
+	num = num.toString().replace(/\$|\.|\ VND/g,'');
 	if(isNaN(num)){
 		num = "0";
 	}else{
 		if( num < 1000){
 			num = num;
 		}else{
-			
 			for (var i = 0; i < Math.floor((num.length-(1+i))/3); i++)
 			num = num.substring(0,num.length-(4*i+3)) + '.' + num.substring(num.length-(4*i+3));
 		}
 	}
 	
-	return num ;
+	return num + " VND";
 }
 
 function AutoFormatDigit(obj) {
@@ -1082,4 +1084,13 @@ function onRedirection(){
 	}else{
 		window.location.href = '#listDebts';
 	}
+}
+
+function removeAutoFormatDigit(obj){
+	var num = $(obj).val().toString().replace(/\$|\.|\ VND/g,'');
+	
+	$(obj).val(num);
+}
+function test(){
+	alert(1);
 }
