@@ -872,7 +872,7 @@ function drawPieChartDisplayResult(tx, results){
 			// draw pie chart
 			myChart.setDataArray(myData);
 			myChart.colorize(arrayColor);
-			myChart.setSize(480, 300);
+			myChart.setSize(380, 300);
 			myChart.setTitle('Biểu đồ thống kê chi tiêu');
 			myChart.setTitleFontFamily('Times New Roman');
 			myChart.setTitleFontSize(14);
@@ -880,7 +880,7 @@ function drawPieChartDisplayResult(tx, results){
 			myChart.setPieRadius(100);
 			myChart.setPieValuesColor('#FFFFFF');
 			myChart.setPieValuesFontSize(9);
-			myChart.setPiePosition(160, 180);
+			myChart.setPiePosition(100, 180);
 			myChart.setShowXValues(false);
 			/*myChart.setLegend('#99CDFB', 'Papers where authors found');
 			myChart.setLegend('#3366FB', 'Papers which cite from other articles');
@@ -891,7 +891,7 @@ function drawPieChartDisplayResult(tx, results){
 			myChart.setLegendShow(true);
 			myChart.setLegendFontFamily('Times New Roman');
 			myChart.setLegendFontSize(15);
-			myChart.setLegendPosition(300, 120);
+			myChart.setLegendPosition(215, 120);
 			myChart.setPieAngle(0);
 			myChart.set3D(true);
 			myChart.draw();
